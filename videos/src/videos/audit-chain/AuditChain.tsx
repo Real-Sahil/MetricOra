@@ -1,11 +1,11 @@
 import { loadFont } from "@remotion/fonts";
-import { AbsoluteFill, staticFile } from "remotion";
+import { AbsoluteFill, Audio, staticFile } from "remotion";
 
 import { clamp01, progress, useTime } from "../../kit/time";
 import { Mark, Wordmark } from "../../ui/Logo";
 import { arrive, ease, scene } from "../../ui/motion";
 import { FONT, MONO } from "../../ui/tokens";
-import { CHAIN, CHECK, DURATION, SCENES } from "./cues";
+import { CHAIN, CHECK, DURATION, SCENES, WARP_NEW, WARP_OLD, warp } from "./cues";
 
 loadFont({ family: "Geist", url: staticFile("fonts/Geist-Variable.woff2"), weight: "100 900" });
 loadFont({ family: "Geist Mono", url: staticFile("fonts/GeistMono-Variable.woff2"), weight: "100 900" });
@@ -419,9 +419,10 @@ function Close({ t }: { t: number }) {
  * scripts/marketing/record-loops.mjs. Voiceover and captions are added after recording; times live in cues.ts.
  */
 export function AuditChain(_props: AuditChainProps) {
-  const t = useTime();
+  const t = warp(useTime(), WARP_OLD, WARP_NEW);
   return (
     <AbsoluteFill style={{ overflow: "hidden" }}>
+      <Audio src={staticFile("audio/audit-chain/vo-main.wav")} />
       <Backdrop t={t} />
       <Question t={t} />
       <RecordScene t={t} />

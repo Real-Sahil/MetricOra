@@ -1,12 +1,19 @@
-import { AbsoluteFill } from "remotion";
+import { AbsoluteFill, Audio, staticFile } from "remotion";
 
 import { clamp01, progress, useTime } from "../../kit/time";
 import { Mark, Wordmark } from "../../ui/Logo";
 import { ease } from "../../ui/motion";
 import { FONT, MONO } from "../../ui/tokens";
 import { fill, mix, P, type as typeStyle } from "./AuditChain";
+import { warp } from "./cues";
+import voice from "./voice.json";
 
-export const VERTICAL_DURATION = 20;
+export const VERTICAL_DURATION = voice.vertical.total;
+
+/** Authored on a 20 s timeline; the voiceover sets the real scene boundaries. */
+const VS = voice.vertical.starts;
+const OLD = [0, 3.5, 10, 16, 20];
+const NEW = [0, VS.v2 - 0.2, VS.v3 - 0.2, VS.v4 - 0.2, VERTICAL_DURATION];
 export type AuditChainVerticalProps = { fps: number };
 
 /**
@@ -171,10 +178,11 @@ function Close({ t }: { t: number }) {
 }
 
 export function AuditChainVertical(_props: AuditChainVerticalProps) {
-  const t = useTime();
+  const t = warp(useTime(), OLD, NEW);
   const showNote = (t >= 0 && t < 10) || (t >= 10 && t < 16);
   return (
     <AbsoluteFill style={{ overflow: "hidden" }}>
+      <Audio src={staticFile("audio/audit-chain/vo-vertical.wav")} />
       <Backdrop t={t} />
       {/* Hook: the break first, on a quick fuse. */}
       <Stack t={t} start={0.2} breakAt={1.7} from={BEATS.hook.from} to={BEATS.hook.to} />
