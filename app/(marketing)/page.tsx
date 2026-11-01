@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { APP_STORE_URL, PLAY_URL } from "@/components/marketing/brand-marks";
+import { ExplodedFigure } from "@/components/marketing/hairline-figure";
 import { LaunchFilm } from "@/components/marketing/launch-film";
 import { DemoAnalytics } from "@/components/marketing/demo-analytics";
 import { PLAN_ANNUAL_TOTAL, PLAN_PRICES } from "@/lib/billing/limits";
@@ -189,6 +190,22 @@ export default function HomePage() {
               <Body>{c.answer}</Body>
             </div>
           ))}
+        </div>
+      </Section>
+
+      <Section tone="paper">
+        <div className="grid items-center gap-14 lg:grid-cols-2">
+          <div className="max-w-[460px] justify-self-center lg:order-2 lg:justify-self-end">
+            <ExplodedFigure label="A window drawn in four layers. Move the pointer across to open the gap between them." />
+            <p className="mt-3 text-center text-[13px] text-mk-text-3">Move across to open the layers.</p>
+          </div>
+          <div>
+            <SectionIntro
+              eyebrow="Layer by layer"
+              title="Every total opens into the records under it."
+              lead="A report figure comes from a dashboard total, the activity records behind it, and the calculation on each record: amount, factor, library and methodology version. Nothing sits between them that you cannot open."
+            />
+          </div>
         </div>
       </Section>
 

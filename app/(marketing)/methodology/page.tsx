@@ -1,3 +1,4 @@
+import { BranchesFigure } from "@/components/marketing/hairline-figure";
 import { GuideLinks } from "@/components/marketing/guide-links";
 import type { Metadata } from "next";
 import { withSocial } from "@/lib/seo/page-meta";
@@ -136,11 +137,16 @@ export default function MethodologyPage() {
 
       <Section tone="light">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
-          <SectionIntro
-            eyebrow="Versions"
-            title="Methodology history."
-            lead="The version changes only when a rule would change a figure from the same records and library. Published snapshots keep the version they were calculated under. The full account of each change is in the app and the assurance pack."
-          />
+<div>
+                      <SectionIntro
+              eyebrow="Versions"
+              title="Methodology history."
+              lead="The version changes only when a rule would change a figure from the same records and library. Published snapshots keep the version they were calculated under. The full account of each change is in the app and the assurance pack."
+            />
+            <div className="mt-8 max-w-[380px]">
+              <BranchesFigure label="A commit graph with one branch forking from main and merging back. Move the pointer over a commit to lift it and its history." />
+            </div>
+          </div>
           <Timeline value={0} className="pt-1">
             {METHODOLOGY_CHANGELOG.map((m, i) => (
               <TimelineItem key={m.name} step={i + 1} className="ms-7 not-last:pb-10">

@@ -7,11 +7,14 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTi
  */
 export function EmptyState({
   icon: Icon,
+  figure,
   title,
   description,
   children,
 }: {
   icon?: ComponentType<{ className?: string }>;
+  /** A line figure shown instead of the icon tile (see PlotFigure). */
+  figure?: ReactNode;
   title: ReactNode;
   description?: ReactNode;
   children?: ReactNode;
@@ -19,7 +22,7 @@ export function EmptyState({
   return (
     <Empty className="border-0 py-12">
       <EmptyHeader>
-        {Icon && (
+        {figure ? <div className="mx-auto mb-2 w-full max-w-[220px]">{figure}</div> : Icon && (
           <EmptyMedia variant="icon">
             <Icon aria-hidden="true" />
           </EmptyMedia>

@@ -5,6 +5,7 @@ import { notFound, redirect } from "next/navigation";
 import { BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { PlotFigure } from "@/components/marketing/hairline-figure";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AuthError, ROLE_GROUPS, requireOrgMember } from "@/lib/auth/session";
@@ -58,6 +59,7 @@ export default async function CarbonByAccountPage({ params }: CarbonByAccountPag
           {view.accounts.length === 0 && !view.unassigned ? (
             <EmptyState
               icon={BookOpen}
+              figure={<PlotFigure label="A bar chart with flat tabs where the bars will stand once records have a ledger account." />}
               title="No approved records with a ledger account yet"
               description="Each record takes its ledger account from the account column of an ERP import profile, or from a column named ledgerAccount (or a GL or nominal alias) in a plain import."
             >
