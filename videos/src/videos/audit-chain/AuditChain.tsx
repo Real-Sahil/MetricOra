@@ -17,7 +17,7 @@ export type AuditChainProps = { fps: number; debug?: boolean };
  * Bright palette: the scope colours from the product (orange, blue, green) pushed to full
  * saturation, with the logo's amber and a warm paper. Text on bright grounds is deep ink.
  */
-const P = {
+export const P = {
   sun: "#FF7A2F",
   amber: "#FFC53D",
   cream: "#FFF4E6",
@@ -30,13 +30,13 @@ const P = {
   white: "#FFFFFF",
 } as const;
 
-const fill: React.CSSProperties = { position: "absolute", inset: 0, display: "grid", placeItems: "center" };
-const type: React.CSSProperties = { fontFamily: FONT, fontWeight: 700, letterSpacing: "-0.035em", lineHeight: 1 };
+export const fill: React.CSSProperties = { position: "absolute", inset: 0, display: "grid", placeItems: "center" };
+export const type: React.CSSProperties = { fontFamily: FONT, fontWeight: 700, letterSpacing: "-0.035em", lineHeight: 1 };
 
 /* ---------- colour helpers (time-driven, hex in and out) ---------- */
 
 const hex = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
-const mix = (a: string, b: string, u: number) => {
+export const mix = (a: string, b: string, u: number) => {
   const [r1, g1, b1] = hex(a);
   const [r2, g2, b2] = hex(b);
   const m = (x: number, y: number) => Math.round(x + (y - x) * u).toString(16).padStart(2, "0");
@@ -103,7 +103,7 @@ function Note({ children, color = P.ink }: { children: string; color?: string })
 }
 
 /** A word that slams in: rises from below a mask line, overshooting slightly. */
-function Slam({ t, at, children, size, color = P.ink, delay = 0 }: { t: number; at: number; children: string; size: number; color?: string; delay?: number }) {
+export function Slam({ t, at, children, size, color = P.ink, delay = 0 }: { t: number; at: number; children: string; size: number; color?: string; delay?: number }) {
   const words = children.split(" ");
   return (
     <div style={{ ...type, fontSize: size, color, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: `0 ${size * 0.22}px` }}>
