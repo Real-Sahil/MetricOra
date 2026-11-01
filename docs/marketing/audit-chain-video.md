@@ -31,7 +31,7 @@ Written to be read at a calm pace, UK English, no music under the key line in sc
 "Press Check the audit trail. MetricOra reads the whole chain and tells you one of three things: intact, broken, or empty. If broken, it names the first row that fails, and why."
 
 **5. Outside the database (0:44 to 0:54)**
-"Every assurance pack carries a small verifier script. Your auditor can run it on their own machine, on the exported log. And each night a copy of the latest fingerprint is stored away from the rows it protects, with a weekly copy of the hashes kept on GitHub."
+"Every assurance pack carries a small verifier script. Your auditor can run it on their own machine, on the exported log. And each night a copy of the latest fingerprint is stored away from the rows it protects and a weekly copy of the hashes kept elsewhere."
 
 **6. Close (0:54 to 1:00)**
 "Every tonne traced. And the trail behind it checkable. MetricOra."
@@ -44,7 +44,7 @@ Written to be read at a calm pace, UK English, no music under the key line in sc
 | 2 | 0:07 to 0:17 | Screen recording: Audit trail page listing events (sign-in, import, calculation run, publish). Rows scroll gently. | "Written once. Never updated." | Highlight row types one by one with a thin accent outline. `*Demo data` bottom-left. |
 | 3 | 0:17 to 0:32 | Diagram, built in code: five blocks in a row, each showing a short hash and an arrow from the one before. On the key line, the third block turns accent-red and the fourth and fifth blocks' hashes visibly stop matching. | "Each entry holds the fingerprint of the one before." then "Change one row. Everything after it breaks." | This is the hero scene. Hairline `Stack` or similar line-art feel for the blocks. Music drops out for the key line. Hash strings are illustrative; label the diagram "Illustration". |
 | 4 | 0:32 to 0:44 | Screen recording: Audit trail, click "Check the audit trail". Result panel shows Intact with the head hash. Cut to a second take of a broken result naming the first failing row (record this on a deliberately altered copy of the demo database, never production). | "Intact. Broken. Empty." | The broken take must be produced on a throwaway local database and captioned "Altered demo copy". `*Demo data`. |
-| 5 | 0:44 to 0:54 | Split: left, a terminal showing `node verify-audit-log.mjs audit-log.csv <organisationId>` and its result; right, a simple diagram of three copies (database, nightly stored head, weekly GitHub hashes). | "Verify it yourself, offline." "Copies kept away from the rows." | Real terminal capture of the shipped script run on a demo export. Keep the organisation id obviously fake. |
+| 5 | 0:44 to 0:54 | Split: left, the assurance pack card with its verifier; right, a simple diagram of three copies (your records, nightly stored head, weekly copy of the hashes kept elsewhere). | "Verify it yourself, offline." "Copies kept away from the rows." | The assurance pack card with its included verifier. No terminal or command on screen. |
 | 6 | 0:54 to 1:00 | Paper background (#F9FAFC). MetricOra mark, one line, one button style. | "Every tonne traced. The trail behind it checkable." then metricora.co.uk | Hold two seconds. No App Store badge until approved. |
 
 ## LinkedIn cut (20 s, vertical)
@@ -66,7 +66,7 @@ We built ours as a chain. Every entry carries a fingerprint of the one before, s
 
 The part I care about more: your auditor doesn't have to take our word for it. Every assurance pack ships with a small script they can run on their own machine against the exported log.
 
-It isn't magic. If someone removed the very newest entries, a chain on its own would still look fine. So we store a copy of the latest fingerprint away from the rows, nightly, and keep a weekly copy of the hashes on GitHub.
+It isn't magic. If someone removed the very newest entries, a chain on its own would still look fine. So we store a copy of the latest fingerprint away from the rows, nightly, and keep a weekly copy of the hashes elsewhere.
 
 Evidence you can check beats evidence you're asked to trust.
 
@@ -82,7 +82,7 @@ www.metricora.co.uk
 | Check result is intact, broken or empty; broken names the first bad sequence and why | `verifyAuditChain()`; `GET /api/orgs/{orgId}/audit-chain` |
 | Verifier script ships in every assurance pack, zero dependencies | `lib/audit/verify-script.ts`; command `node verify-audit-log.mjs audit-log.csv <organisationId>` |
 | Nightly copy of the head stored away from the rows | `lib/audit/anchor.ts` (only on the `supabase` and `r2` storage drivers, which production uses) |
-| Weekly copy of the hashes on GitHub | `lib/audit/github-anchor.ts`, `.github/workflows/audit-anchor.yml` |
+| Weekly copy of the hashes kept elsewhere (source detail not named in the film) | `lib/audit/github-anchor.ts`, `.github/workflows/audit-anchor.yml` |
 
 ## Do not say
 
@@ -93,8 +93,8 @@ www.metricora.co.uk
 
 ## Open items before production
 
-1. Capture the footage: run `scripts/marketing/record-loops.mjs` for the audit trail and check flow; capture the verifier script in a terminal on a demo export.
+1. Capture the footage: run `scripts/marketing/record-loops.mjs` for the audit trail and check flow.
 2. Record the "Broken" take on a throwaway local database with one edited row.
 3. Voiceover: record or generate, then run faster-whisper for the caption file.
 4. Build: the main film as a new Remotion composition under `videos/src/videos/audit-chain/`; the vertical cut and the loop as HyperFrames or Remotion, whichever renders the chain diagram more cleanly.
-5. Confirm with the owner: the final tagline in scene 6, and whether the GitHub copy should be named on camera.
+5. Confirm with the owner: the final tagline in scene 6. Decided: the film names only MetricOra. No GitHub or other third-party names on screen or in the voiceover.
