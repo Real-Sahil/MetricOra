@@ -95,6 +95,6 @@ www.metricora.co.uk
 
 1. Capture the footage: run `scripts/marketing/record-loops.mjs` for the audit trail and check flow.
 2. Record the "Broken" take on a throwaway local database with one edited row.
-3. Voiceover: record or generate, then run faster-whisper for the caption file.
-4. Build: the main film as a new Remotion composition under `videos/src/videos/audit-chain/`; the vertical cut and the loop as HyperFrames or Remotion, whichever renders the chain diagram more cleanly.
+3. Voiceover: a Piper draft voice is in place (`videos/scripts/audit-voiceover.py`; licence unverified). Record or license a final voice, rerun the script, then run faster-whisper for the main film's caption file.
+4. Build: the main film (about 69 s) and the 9:16 LinkedIn cut (about 21 s) exist as Remotion compositions under `videos/src/videos/audit-chain/`. Still to do: the 1:1 cut and the 8 s loop.
 5. Confirm with the owner: the final tagline in scene 6. Decided: the film names only MetricOra. No GitHub or other third-party names on screen or in the voiceover.
