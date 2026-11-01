@@ -142,7 +142,7 @@ function Question({ t }: { t: number }) {
 /* ---------- 2. the record ---------- */
 
 const EVENTS: [string, string, string][] = [
-  ["Sign-in", "Admin", P.sun],
+  ["Record edited", "Editor", P.sun],
   ["Import committed", "Editor", P.cobalt],
   ["Calculation run", "System", P.mint],
   ["Snapshot published", "Admin", P.amber],

@@ -22,7 +22,7 @@ Written to be read at a calm pace, UK English, no music under the key line in sc
 "Somebody asks you to prove a number from last year. Not the number. How you know nobody changed it since."
 
 **2. The record (0:07 to 0:17)**
-"Every sign-in, import, record edit, calculation run and publication is written to an audit trail. Once written, it is never updated. Never deleted."
+"Every import, record edit, calculation run and publication is written to an audit trail. Once written, it is never updated. Never deleted."
 
 **3. The chain (0:17 to 0:32)**
 "Each entry carries a fingerprint of the entry before it. Change one row, and the fingerprint of every row after it stops matching. A gap or an edit shows."
@@ -41,7 +41,7 @@ Written to be read at a calm pace, UK English, no music under the key line in sc
 | # | Time | Visual | On-screen text | Motion and notes |
 |---|---|---|---|---|
 | 1 | 0:00 to 0:07 | Dark ink background (#131D29). A single number from the demo dashboard (use the real published total shown in the demo tenant) fades in at centre, accent #C2400C underline. | "Last year's number." then "Who could have changed it?" | Slow push in on the number, then a soft question mark of hairline lines. Type in the marketing sans, no serif. |
-| 2 | 0:07 to 0:17 | Screen recording: Audit trail page listing events (sign-in, import, calculation run, publish). Rows scroll gently. | "Written once. Never updated." | Highlight row types one by one with a thin accent outline. `*Demo data` bottom-left. |
+| 2 | 0:07 to 0:17 | Screen recording: Audit trail page listing events (import, record edit, calculation run, publish). Rows scroll gently. | "Written once. Never updated." | Highlight row types one by one with a thin accent outline. `*Demo data` bottom-left. |
 | 3 | 0:17 to 0:32 | Diagram, built in code: five blocks in a row, each showing a short hash and an arrow from the one before. On the key line, the third block turns accent-red and the fourth and fifth blocks' hashes visibly stop matching. | "Each entry holds the fingerprint of the one before." then "Change one row. Everything after it breaks." | This is the hero scene. Hairline `Stack` or similar line-art feel for the blocks. Music drops out for the key line. Hash strings are illustrative; label the diagram "Illustration". |
 | 4 | 0:32 to 0:44 | Screen recording: Audit trail, click "Check the audit trail". Result panel shows Intact with the head hash. Cut to a second take of a broken result naming the first failing row (record this on a deliberately altered copy of the demo database, never production). | "Intact. Broken. Empty." | The broken take must be produced on a throwaway local database and captioned "Altered demo copy". `*Demo data`. |
 | 5 | 0:44 to 0:54 | Split: left, the assurance pack card with its verifier; right, a simple diagram of three copies (your records, nightly stored head, weekly copy of the hashes kept elsewhere). | "Verify it yourself, offline." "Copies kept away from the rows." | The assurance pack card with its included verifier. No terminal or command on screen. |
@@ -76,7 +76,7 @@ www.metricora.co.uk
 
 | Claim in the film | Source |
 |---|---|
-| Sign-ins, role changes, imports, record edits, calculation runs, publications, report downloads and reviews are recorded | `CLAUDE.md` Audit Log section; Security page controls copy |
+| Role changes, imports, record edits, calculation runs, publications, report downloads and reviews are recorded | `CLAUDE.md` Audit Log section; Security page controls copy |
 | Entries are append-only, never updated or deleted | `writeAuditLog()` in `lib/db/audit.ts` |
 | Each entry hashes the one before it | `lib/audit/chain.ts` (sha256 over a JSON array including the previous hash) |
 | Check result is intact, broken or empty; broken names the first bad sequence and why | `verifyAuditChain()`; `GET /api/orgs/{orgId}/audit-chain` |

@@ -20,7 +20,7 @@ OUT = ROOT / "public/audio/audit-chain"
 
 MAIN = {
     "m1": "Somebody asks you to prove a number from last year. Not the number. How you know nobody changed it since.",
-    "m2": "Every sign-in, import, record edit, calculation run and publication is written to an audit trail. Once written, it is never updated. Never deleted.",
+    "m2": "Every import, record edit, calculation run and publication is written to an audit trail. Once written, it is never updated. Never deleted.",
     "m3": "Each entry carries a fingerprint of the entry before it. Change one row, and the fingerprint of every row after it stops matching. A gap or an edit shows.",
     "m4": "Press Check the audit trail. MetricOra reads the whole chain and tells you one of three things: intact, broken, or empty. If broken, it names the first row that fails, and why.",
     "m5": "Every assurance pack carries a small verifier script. Your auditor can run it on their own machine, on the exported log. And each night a copy of the latest fingerprint is stored away from the rows it protects, with a weekly copy of the hashes kept elsewhere.",
