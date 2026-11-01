@@ -148,6 +148,21 @@ if command -v npx >/dev/null 2>&1 && [ ! -d "$CLAUDE_DIR/skills/video-shotcraft"
     && log "video-shotcraft skill installed" || log "video-shotcraft install failed"
 fi
 
+# ── video and design skills (skills CLI, user scope) ──────────────────────────
+# remotion-dev/skills (Remotion best practices), heygen-com/hyperframes (HTML to video),
+# Nutlope/hallmark and pbakaus/impeccable (design). Skills run with full agent permissions: review
+# them before use. faster-whisper (captions from a voiceover) is a Python library, installed per user.
+if command -v npx >/dev/null 2>&1; then
+  for repo in remotion-dev/skills:remotion-best-practices heygen-com/hyperframes:hyperframes Nutlope/hallmark:hallmark pbakaus/impeccable:impeccable; do
+    [ -d "$CLAUDE_DIR/skills/${repo#*:}" ] && continue
+    npx --yes skills add "${repo%%:*}" -g -a claude-code -y >/dev/null 2>&1 \
+      && log "${repo%%:*} skills installed" || log "${repo%%:*} install failed"
+  done
+fi
+if command -v pip3 >/dev/null 2>&1 && ! python3 -c "import faster_whisper" >/dev/null 2>&1; then
+  pip3 install --user -q faster-whisper >/dev/null 2>&1 && log "faster-whisper installed" || log "faster-whisper install failed"
+fi
+
 # ── agency-agents: subagents in ~/.claude/agents (MIT) ────────────────────────
 # The repo has 280+ agents and every one adds its description to every session's
 # context (about 230 characters each), so only these divisions are installed:
