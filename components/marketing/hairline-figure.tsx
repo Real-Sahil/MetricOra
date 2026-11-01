@@ -9,6 +9,9 @@ const Box = () => <div aria-hidden="true" className="aspect-[5/4] w-full" />;
 
 const Exploded = dynamic(() => import("@lucasmarkes/hairline/react").then((m) => m.Exploded), { ssr: false, loading: Box });
 const Branches = dynamic(() => import("@lucasmarkes/hairline/react").then((m) => m.Branches), { ssr: false, loading: Box });
+const Vault = dynamic(() => import("@lucasmarkes/hairline/react").then((m) => m.Vault), { ssr: false, loading: Box });
+const Terrain = dynamic(() => import("@lucasmarkes/hairline/react").then((m) => m.Terrain), { ssr: false, loading: Box });
+const Rail = dynamic(() => import("@lucasmarkes/hairline/react").then((m) => m.Rail), { ssr: false, loading: Box });
 const Plot = dynamic(() => import("@lucasmarkes/hairline/react").then((m) => m.Plot), { ssr: false, loading: Box });
 
 // The plate is filled, so it must be the colour the figure sits on.
@@ -30,4 +33,16 @@ export function BranchesFigure({ label, plateColor = "#FFFFFF", className }: Bas
 /** In-app empty state: follows the app theme, on the card surface. */
 export function PlotFigure({ label, className }: Omit<Base, "plateColor">) {
   return <Plot label={label} style={plate("var(--surface, #fff)")} className={className} />;
+}
+
+export function VaultFigure({ label, plateColor = "#FFFFFF", className }: Base) {
+  return <Vault theme="light" label={label} style={plate(plateColor)} className={className} />;
+}
+
+export function TerrainFigure({ label, className }: Omit<Base, "plateColor">) {
+  return <Terrain label={label} style={plate("var(--surface, #fff)")} className={className} />;
+}
+
+export function RailFigure({ label, className }: Omit<Base, "plateColor">) {
+  return <Rail label={label} style={plate("var(--surface, #fff)")} className={className} />;
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { withSocial } from "@/lib/seo/page-meta";
 import { PageJsonLd } from "@/lib/seo/json-ld";
+import { VaultFigure } from "@/components/marketing/hairline-figure";
 import { Body, ButtonLink, ClosingCta, Eyebrow, H1, H3, Lead, ProductShot, Section, SectionIntro, CheckList, reveal } from "@/components/marketing/kit";
 
 export const metadata: Metadata = withSocial({
@@ -57,7 +58,10 @@ export default function SecurityPage() {
       </Section>
 
       <Section tone="light">
-        <SectionIntro eyebrow="Controls" title="What protects your data." />
+        <div className="grid items-center gap-10 lg:grid-cols-[1fr_320px]">
+          <SectionIntro eyebrow="Controls" title="What protects your data." />
+          <VaultFigure className="mx-auto w-full max-w-[320px]" label="A vault drawn in line, its layers opening as the pointer moves across." />
+        </div>
         <div className="mt-12 grid gap-px overflow-hidden rounded-[12px] border border-mk-line bg-mk-line sm:grid-cols-2">
           {CONTROLS.map((c, i) => (
             <div key={c.title} {...reveal(i, "inner")} className="flex flex-col gap-2 bg-mk-surface p-7">

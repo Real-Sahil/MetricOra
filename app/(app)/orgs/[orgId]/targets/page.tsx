@@ -27,6 +27,7 @@ import { Target } from "lucide-react";
 import { DeleteInitiativeButton, DeleteTargetButton, InitiativeStartDate } from "./target-actions";
 import { TargetProgressSection, type TargetWithProgress } from "./target-progress";
 import { getOrgLocale } from "@/lib/i18n/org-basics";
+import { RailFigure, TerrainFigure } from "@/components/marketing/hairline-figure";
 import { EmptyState as EmptyPanel } from "@/components/ui/empty-state";
 
 interface TargetsPageProps {
@@ -202,6 +203,7 @@ export default async function TargetsPage({ params }: TargetsPageProps) {
             )}
             {targets.length === 0 ? (
               <EmptyState
+                figure="targets"
                 title="No reduction targets yet"
                 description="Create targets after reporting periods and calculation snapshots are available."
               />
@@ -275,6 +277,7 @@ export default async function TargetsPage({ params }: TargetsPageProps) {
             )}
             {initiatives.length === 0 ? (
               <EmptyState
+                figure="initiatives"
                 title="No initiatives yet"
                 description="Add initiatives once owners, costs, expected dates, and estimated impact are known."
               />
@@ -372,6 +375,7 @@ function AccessDenied() {
   );
 }
 
-function EmptyState({ title, description }: { title: string; description: string }) {
-  return <EmptyPanel icon={Target} title={title} description={description} />;
+function EmptyState({ title, description, figure }: { title: string; description: string; figure?: "targets" | "initiatives" }) {
+  const art = figure === "targets" ? <TerrainFigure label="A line landscape of terraces stepping down, the path a reduction target will follow." /> : figure === "initiatives" ? <RailFigure label="A rail with no carriages yet, where initiatives will run." /> : undefined;
+  return <EmptyPanel icon={Target} title={title} description={description} figure={art} />;
 }
