@@ -143,6 +143,7 @@ const pricingJsonLd = {
     {
       "@type": "Product",
       name: "MetricOra",
+      image: "https://www.metricora.co.uk/og-default.png",
       description: "Carbon evidence, accounting and reporting for UK contractors, priced per organisation.",
       brand: { "@type": "Brand", name: "MetricOra" },
       offers: [
