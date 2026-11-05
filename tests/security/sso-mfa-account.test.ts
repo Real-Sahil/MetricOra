@@ -18,6 +18,7 @@ const db = vi.hoisted(() => ({
   reportingPeriod: { count: vi.fn() },
   activityRecord: { count: vi.fn() },
   calculationRun: { count: vi.fn() },
+  carbonReductionPlan: { count: vi.fn() },
   onboardingProgress: { findUnique: vi.fn() },
   $transaction: vi.fn(),
 }));
@@ -270,6 +271,7 @@ describe("onboarding status", () => {
     db.reportingPeriod.count.mockResolvedValue(0);
     db.activityRecord.count.mockResolvedValue(0);
     db.calculationRun.count.mockResolvedValue(0);
+    db.carbonReductionPlan.count.mockResolvedValue(0);
     db.onboardingProgress.findUnique.mockResolvedValue(null);
 
     const res = await getOnboarding(statusRequest(), context);

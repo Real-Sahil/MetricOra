@@ -70,7 +70,8 @@ export default function NewOrgPage() {
       }
 
       const org = await res.json();
-      router.push(`/orgs/${org.id}/dashboard`);
+      // A new organisation starts on the setup checklist (Carbon Reduction Plan first).
+      router.push(`/orgs/${org.id}/onboarding`);
     } catch {
       setError("An unexpected error occurred. Please try again.");
     } finally {

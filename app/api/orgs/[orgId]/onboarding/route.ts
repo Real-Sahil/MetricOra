@@ -4,19 +4,10 @@ import { requireOrgMember, ROLE_GROUPS } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
 import { writeAuditLog } from "@/lib/db/audit";
 import { handleRouteError, apiError } from "@/lib/validation/api";
-
-const ONBOARDING_STEPS = [
-  "org_profile",
-  "first_team_member",
-  "reporting_period",
-  "first_import",
-  "first_calculation",
-] as const;
-
-type OnboardingStepId = (typeof ONBOARDING_STEPS)[number];
+import { ALL_STEPS, REQUIRED_STEPS, onboardingState, requiredStepsDone, type OnboardingStepId } from "@/lib/onboarding/steps";
 
 const completeStepSchema = z.union([
-  z.object({ step: z.enum(ONBOARDING_STEPS) }),
+  z.object({ step: z.enum(ALL_STEPS) }),
   z.object({ skipAll: z.literal(true) }),
 ]);
 
@@ -36,6 +27,7 @@ export async function GET(
       periodCount,
       activityCount,
       calcCount,
+      planCount,
       savedProgress,
     ] = await Promise.all([
       prisma.organization.findUnique({
@@ -46,6 +38,7 @@ export async function GET(
       prisma.reportingPeriod.count({ where: { organizationId: orgId } }),
       prisma.activityRecord.count({ where: { organizationId: orgId } }),
       prisma.calculationRun.count({ where: { organizationId: orgId } }),
+      prisma.carbonReductionPlan.count({ where: { organizationId: orgId } }),
       prisma.onboardingProgress.findUnique({
         where: { organizationId: orgId },
         select: { completedSteps: true, isComplete: true },
@@ -55,6 +48,7 @@ export async function GET(
     // Derive completion from actual state so it stays accurate even if
     // steps were completed outside the wizard (e.g. via CSV import).
     const derived: Record<OnboardingStepId, boolean> = {
+      first_crp: planCount >= 1,
       org_profile: !!(org?.industry && org?.hqCountry),
       first_team_member: memberCount >= 2,
       reporting_period: periodCount >= 1,
@@ -63,16 +57,10 @@ export async function GET(
     };
 
     // Merge saved progress (manually skipped/dismissed steps) with derived.
-    const saved = new Set(savedProgress?.completedSteps ?? []);
-    const steps = ONBOARDING_STEPS.map((id) => ({
-      id,
-      done: derived[id] || saved.has(id),
-    }));
-
-    const isComplete = steps.every((s) => s.done);
+    const { steps, optional, isComplete } = onboardingState(derived, savedProgress?.completedSteps ?? []);
 
     void session; // not used here but keeps the auth check meaningful
-    return NextResponse.json({ steps, isComplete });
+    return NextResponse.json({ steps, optional, isComplete });
   } catch (err) {
     return handleRouteError(err);
   }
@@ -103,12 +91,12 @@ export async function POST(
 
     const current = new Set(existing?.completedSteps ?? []);
     if (isSkipAll) {
-      ONBOARDING_STEPS.forEach((s) => current.add(s));
+      REQUIRED_STEPS.forEach((s) => current.add(s));
     } else {
       current.add((parsed.data as { step: string }).step);
     }
     const completedSteps = [...current];
-    const isComplete = ONBOARDING_STEPS.every((s) => current.has(s));
+    const isComplete = requiredStepsDone(current);
 
     const progress = await prisma.onboardingProgress.upsert({
       where: { organizationId: orgId },

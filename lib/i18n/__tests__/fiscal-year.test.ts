@@ -1,5 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { fiscalYearOf, isStartMonth } from "../fiscal-year";
+import { fiscalYearOf, isStartMonth, previousFiscalYear } from "../fiscal-year";
+
+describe("previousFiscalYear", () => {
+  it("calendar year", () => {
+    expect(previousFiscalYear(new Date("2026-11-05T12:00:00Z"), 1)).toEqual({ label: "FY2025", startDate: "2025-01-01", endDate: "2025-12-31" });
+  });
+  it("April to March, after and before the start", () => {
+    expect(previousFiscalYear(new Date("2026-11-05T00:00:00Z"), 4).label).toBe("FY2025/26");
+    expect(previousFiscalYear(new Date("2026-02-10T00:00:00Z"), 4).label).toBe("FY2024/25");
+  });
+  it("on 29 February with a March start, the year before the current one", () => {
+    expect(previousFiscalYear(new Date("2028-02-29T00:00:00Z"), 3)).toEqual({ label: "FY2026/27", startDate: "2026-03-01", endDate: "2027-02-28" });
+  });
+});
 
 describe("fiscalYearOf", () => {
   it("calendar year", () => {

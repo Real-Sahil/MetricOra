@@ -27,3 +27,11 @@ export function fiscalYearOf(date: Date, startMonth: number): FiscalYear {
     endDate: iso(endYear, endMonth, lastDay),
   };
 }
+
+/** The last financial year that has ended before `date`: the one a Carbon Reduction Plan usually reports. */
+export function previousFiscalYear(date: Date, startMonth: number): FiscalYear {
+  const current = fiscalYearOf(date, startMonth);
+  const dayBefore = new Date(`${current.startDate}T00:00:00Z`);
+  dayBefore.setUTCDate(dayBefore.getUTCDate() - 1);
+  return fiscalYearOf(dayBefore, startMonth);
+}

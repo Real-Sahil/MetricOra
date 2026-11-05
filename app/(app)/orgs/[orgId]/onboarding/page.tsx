@@ -14,15 +14,10 @@ import {
   Circle,
   Loader2,
   ChevronRight,
+  FileCheck2,
 } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
-
-type StepId =
-  | "org_profile"
-  | "first_team_member"
-  | "reporting_period"
-  | "first_import"
-  | "first_calculation";
+import { Button } from "@/components/ui/button";
+import type { OnboardingStepId as StepId } from "@/lib/onboarding/steps";
 
 interface StepDef {
   id: StepId;
@@ -34,7 +29,19 @@ interface StepDef {
   cta: string;
 }
 
+// Required steps, in order. The Carbon Reduction Plan is first: it is what most organisations sign up
+// for, and the plan's own checks say which figures it still needs.
 const STEP_DEFS: StepDef[] = [
+  {
+    id: "first_crp",
+    label: "Start your Carbon Reduction Plan",
+    description: "The guided PPN 006 plan, section by section",
+    detail:
+      "Pick the year the plan reports and the wizard walks you through each section, telling you what is still missing before you generate it.",
+    icon: FileCheck2,
+    href: (orgId) => `/orgs/${orgId}/carbon-reduction-plan`,
+    cta: "Start the plan",
+  },
   {
     id: "org_profile",
     label: "Organisation profile",
@@ -46,23 +53,13 @@ const STEP_DEFS: StepDef[] = [
     cta: "Go to settings",
   },
   {
-    id: "first_team_member",
-    label: "Invite your team",
-    description: "Add at least one other member to your organisation",
-    detail:
-      "Sustainability reporting works best with a team. Invite editors, reviewers, or auditors now.",
-    icon: Users,
-    href: (orgId) => `/orgs/${orgId}/settings/members`,
-    cta: "Invite members",
-  },
-  {
     id: "reporting_period",
     label: "Create a reporting period",
     description: "Define your first annual or quarterly reporting window",
     detail:
       "All activity records and calculations are scoped to a reporting period. Create one before importing data.",
     icon: CalendarRange,
-    href: (orgId) => `/orgs/${orgId}/settings/operations`,
+    href: (orgId) => `/orgs/${orgId}/settings/periods`,
     cta: "Create period",
   },
   {
@@ -87,6 +84,17 @@ const STEP_DEFS: StepDef[] = [
   },
 ];
 
+// Offered, never required: one person can finish setup alone.
+const INVITE_STEP: StepDef = {
+  id: "first_team_member",
+  label: "Invite a colleague",
+  description: "Optional. Add an editor, reviewer or auditor whenever you are ready.",
+  detail: "Optional. Add an editor, reviewer or auditor whenever you are ready.",
+  icon: Users,
+  href: (orgId) => `/orgs/${orgId}/settings/members`,
+  cta: "Invite",
+};
+
 interface StepState {
   id: StepId;
   done: boolean;
@@ -97,6 +105,7 @@ export default function OnboardingPage() {
   const orgId = params.orgId;
 
   const [steps, setSteps] = useState<StepState[]>([]);
+  const [inviteDone, setInviteDone] = useState(false);
   const [loading, setLoading] = useState(true);
   const [markingStep, setMarkingStep] = useState<StepId | null>(null);
   const [loadError, setLoadError] = useState(false);
@@ -112,6 +121,7 @@ export default function OnboardingPage() {
       }
       const data = await res.json();
       setSteps(data.steps ?? []);
+      setInviteDone((data.optional ?? []).some((s: StepState) => s.id === "first_team_member" && s.done));
       if (data.isComplete) {
         // Hard navigation: the sidebar's persistent "Dashboard" link prefetches
         // that route while this page is open, caching a stale "redirect to
@@ -170,17 +180,8 @@ export default function OnboardingPage() {
         setStepError("Couldn't save that step. Please try again.");
         return;
       }
-      const data = await res.json();
-      setSteps(
-        STEP_DEFS.map((s) => ({
-          id: s.id,
-          done: (data.steps as string[]).includes(s.id),
-        })),
-      );
-      if (data.isComplete) {
-        // Hard navigation — see the comment in fetchProgress() above.
-        window.location.assign(`/orgs/${orgId}/dashboard`);
-      }
+      // The POST only knows the steps marked by hand; re-read so steps the data already shows stay done.
+      await fetchProgress();
     } catch {
       setStepError("Couldn't save that step. Check your connection and try again.");
     } finally {
@@ -232,25 +233,9 @@ export default function OnboardingPage() {
             Get MetricOra ready
           </h1>
           <p className="text-sm text-[#5B6A78] leading-relaxed">
-            Complete these steps to start tracking emissions for your organisation. You can come
-            back to this page at any time from the dashboard, or navigate directly using the sidebar.
+            Start with your Carbon Reduction Plan, then add the data behind it. You can do this on your
+            own, and come back to this page at any time from the dashboard.
           </p>
-        </div>
-
-        {/* Carbon Reduction Plan shortcut */}
-        <div className="mb-8 flex flex-col gap-3 rounded-lg border border-[#FED7AA] bg-[#FFF7ED] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm font-medium text-[#131d29]">Bidding for public contracts?</p>
-            <p className="text-xs text-[#5B6A78] mt-0.5">
-              The guided Carbon Reduction Plan walks you through PPN 006 section by section and tells you what is still missing.
-            </p>
-          </div>
-          <Link
-            href={`/orgs/${orgId}/carbon-reduction-plan`}
-            className={buttonVariants({ className: "shrink-0" })}
-          >
-            Start your Carbon Reduction Plan
-          </Link>
         </div>
 
         {/* Progress bar */}
@@ -367,6 +352,29 @@ export default function OnboardingPage() {
               </div>
             );
           })}
+        </div>
+
+        {/* Optional: inviting a colleague never holds setup open */}
+        <div className="mt-6 flex items-center justify-between gap-4 rounded-[14px] border border-dashed border-[#E3E8EE] bg-white p-4">
+          <div className="flex items-start gap-3 min-w-0">
+            {inviteDone ? (
+              <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 text-emerald-600" aria-hidden="true" />
+            ) : (
+              <Users className="h-4 w-4 mt-0.5 shrink-0 text-[#5B6A78]" aria-hidden="true" />
+            )}
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-[#131d29]">{INVITE_STEP.label}</p>
+              <p className="text-xs text-[#5B6A78] leading-relaxed">{INVITE_STEP.description}</p>
+            </div>
+          </div>
+          {!inviteDone && (
+            <Link
+              href={INVITE_STEP.href(orgId)}
+              className="shrink-0 text-xs font-medium text-[#c2400c] hover:underline"
+            >
+              {INVITE_STEP.cta}
+            </Link>
+          )}
         </div>
 
         {stepError && (

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AuthError, requireOrgMember, ROLE_GROUPS } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
+import { previousFiscalYear, fiscalYearOf } from "@/lib/i18n/fiscal-year";
 import { StartPlanForm } from "./start-plan-form";
 
 type Props = { params: Promise<{ orgId: string }> };
@@ -25,7 +26,7 @@ export default async function CarbonReductionPlansPage({ params }: Props) {
     return <div className="p-8 text-sm text-red-600">Access denied.</div>;
   }
 
-  const [plans, periods] = await Promise.all([
+  const [plans, periods, org] = await Promise.all([
     prisma.carbonReductionPlan.findMany({
       where: { organizationId: orgId },
       orderBy: { updatedAt: "desc" },
@@ -36,7 +37,14 @@ export default async function CarbonReductionPlansPage({ params }: Props) {
       orderBy: { startDate: "desc" },
       select: { id: true, label: true },
     }),
+    prisma.organization.findUnique({ where: { id: orgId }, select: { fiscalYearStartMonth: true } }),
   ]);
+
+  // With no reporting period yet, offer the last complete financial year (what a plan usually reports)
+  // and the current one, so the plan can start here instead of a detour through Settings.
+  const now = new Date();
+  const startMonth = org?.fiscalYearStartMonth ?? 1;
+  const suggestedYears = periods.length ? [] : [previousFiscalYear(now, startMonth), fiscalYearOf(now, startMonth)];
 
   return (
     <div className="mx-auto max-w-4xl space-y-8 p-6 md:p-8">
@@ -56,13 +64,12 @@ export default async function CarbonReductionPlansPage({ params }: Props) {
             Pick the reporting period the plan reports. Text from your latest plan is carried over so next year starts from this year.
           </p>
           <div className="mt-4">
-            {periods.length ? (
-              <StartPlanForm orgId={orgId} periods={periods} />
-            ) : (
-              <p className="text-sm text-[#41505F]">
-                Create a reporting period first under{" "}
+            <StartPlanForm orgId={orgId} periods={periods} suggestedYears={suggestedYears} />
+            {periods.length ? null : (
+              <p className="mt-3 text-xs text-[#5B6A78]">
+                This creates the year as a reporting period. For other dates, add a period under{" "}
                 <Link href={`/orgs/${orgId}/settings/periods`} className="text-[#c2400c] underline">
-                  Settings
+                  Settings, Reporting periods
                 </Link>
                 .
               </p>

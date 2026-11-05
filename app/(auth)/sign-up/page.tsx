@@ -110,9 +110,10 @@ export default function SignUpPage() {
       }
 
       const org = await orgRes.json();
-      // "Start your Carbon Reduction Plan" on the marketing site links here with ?start=crp.
+      // "Start your Carbon Reduction Plan" on the marketing site links here with ?start=crp and goes
+      // straight to the plan. Everyone else gets the setup checklist, which also starts with the plan.
       const startCrp = new URLSearchParams(window.location.search).get("start") === "crp";
-      router.push(startCrp ? `/orgs/${org.id}/carbon-reduction-plan` : `/orgs/${org.id}/dashboard`);
+      router.push(startCrp ? `/orgs/${org.id}/carbon-reduction-plan` : `/orgs/${org.id}/onboarding`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not create account. Please try again.");
     } finally {

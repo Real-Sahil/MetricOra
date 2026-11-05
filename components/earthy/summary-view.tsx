@@ -60,10 +60,18 @@ export function SummaryView(p: SummaryViewProps) {
 
         {!p.hasData ? (
           <div className="e-card max-md:order-2">
-            <EmptyState icon={Upload} title="No emissions recorded yet" description="Import activity data or add a record, then run a calculation. This page fills in from there.">
-              <Link href={`${root}/imports`} className="e-press inline-flex min-h-11 items-center gap-1 text-sm font-medium" style={{ color: "var(--action)" }}>
-                Go to Imports <ArrowRight className="size-4" aria-hidden="true" />
-              </Link>
+            <EmptyState icon={Upload} title="No emissions recorded yet" description="Most organisations start with their Carbon Reduction Plan: it says which figures it needs. Or import activity data and run a calculation, and this page fills in from there.">
+              <div className="flex flex-wrap items-center justify-center gap-x-6">
+                <Link href={`${root}/carbon-reduction-plan`} className="e-press inline-flex min-h-11 items-center gap-1 text-sm font-medium" style={{ color: "var(--action)" }}>
+                  Start your Carbon Reduction Plan <ArrowRight className="size-4" aria-hidden="true" />
+                </Link>
+                <Link href={`${root}/imports`} className="e-press inline-flex min-h-11 items-center gap-1 text-sm">
+                  Go to Imports
+                </Link>
+                <Link href={`${root}/onboarding`} className="e-press inline-flex min-h-11 items-center gap-1 text-sm">
+                  See the setup checklist
+                </Link>
+              </div>
             </EmptyState>
           </div>
         ) : (
