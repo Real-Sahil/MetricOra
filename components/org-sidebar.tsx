@@ -27,6 +27,7 @@ import { Kbd, KbdGroup } from "@/components/ui/kbd";
 import { ProjectSwitcher } from "@/components/org/project-switcher";
 import { AppearanceMenu, ThemeToggle } from "@/components/org/appearance";
 import type { ThemeChoice } from "@/lib/theme/preference";
+import { inTrialMenu } from "@/lib/nav/trial-menu";
 
 interface NavItem { label: string; href: string; icon: React.ElementType; roles?: string[]; }
 /** A micro-group of items within a product's accordion panel, e.g. "Calculations" inside "MetricOra". */
@@ -44,6 +45,8 @@ interface OrgSidebarProps {
   projects?: { id: string; name: string }[];
   selectedProjectId?: string | null;
   themePreference?: ThemeChoice | null;
+  /** A trial organisation sees the Core and Second wave areas only (lib/nav/trial-menu.ts). */
+  trialMenu?: boolean;
 }
 
 const COLLAPSED_KEY = "metricora:sidebar:collapsed";
@@ -266,7 +269,7 @@ function SidebarInner({ orgId, orgName, projects, selectedProjectId, collapsed, 
   );
 }
 
-export function OrgSidebar({ orgId, orgName, user, role, projects = [], selectedProjectId = null, themePreference = null }: OrgSidebarProps) {
+export function OrgSidebar({ orgId, orgName, user, role, projects = [], selectedProjectId = null, themePreference = null, trialMenu = false }: OrgSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState<boolean>(() => {
@@ -404,7 +407,12 @@ export function OrgSidebar({ orgId, orgName, user, role, projects = [], selected
     .map((group) => ({
       ...group,
       sections: group.sections
-        .map((section) => ({ ...section, items: section.items.filter((item) => !item.roles || (role != null && item.roles.includes(role))) }))
+        .map((section) => ({
+          ...section,
+          items: section.items.filter(
+            (item) => (!item.roles || (role != null && item.roles.includes(role))) && (!trialMenu || inTrialMenu(item.href.replace(`/orgs/${orgId}/`, ""))),
+          ),
+        }))
         .filter((section) => section.items.length > 0),
     }))
     .filter((group) => group.sections.length > 0);

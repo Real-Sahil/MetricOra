@@ -14,6 +14,7 @@ import { getOrgBasics } from "@/lib/i18n/org-basics";
 import { localeForCountry, orgFormat } from "@/lib/i18n/org-format";
 import { OrgLocaleProvider } from "@/components/org/org-locale";
 import { buttonVariants } from "@/components/ui/button";
+import { trialMenuApplies } from "@/lib/nav/trial-menu";
 import { getSelectedProject } from "@/lib/project/selected";
 import { brandingCss, brandingVars } from "@/lib/branding/css-vars";
 import { EarthyTabBar } from "@/components/earthy/tab-bar";
@@ -99,7 +100,7 @@ export default async function OrgLayout({ children, params }: OrgLayoutProps) {
     );
   }
 
-  let org: { id: string; name: string; hqCountry: string | null; reportingCurrency: string | null } | null = null;
+  let org: { id: string; name: string; hqCountry: string | null; reportingCurrency: string | null; plan: string | null; isPilot: boolean | null } | null = null;
   let branding: { primaryHex: string | null; accentHex: string | null; fontFamily: string | null } | null = null;
   let dataFetchError: string | null = null;
 
@@ -159,6 +160,7 @@ export default async function OrgLayout({ children, params }: OrgLayoutProps) {
   const themePreference = parseThemeChoice(session!.user.themePreference);
 
   const cssVars = brandingCss(brandingVars(branding));
+  const trialMenu = trialMenuApplies(org);
 
   // Failed renewal: admins see the grace period, or that new work is blocked.
   const payment =
@@ -184,8 +186,8 @@ export default async function OrgLayout({ children, params }: OrgLayoutProps) {
     <div className="flex flex-col md:flex-row min-h-[100dvh] earthy earthy-shell">
       {cssVars && <style>{cssVars}</style>}
       <AppearanceSync saved={themePreference} />
-      <OrgSidebar orgId={orgId} orgName={org.name} user={user} role={membership!.role} projects={projects} selectedProjectId={selectedProject?.id ?? null} themePreference={themePreference} />
-      <CommandPalette orgId={orgId} role={membership!.role} canUseViews={viewRoles().includes(membership!.role)} />
+      <OrgSidebar orgId={orgId} orgName={org.name} user={user} role={membership!.role} projects={projects} selectedProjectId={selectedProject?.id ?? null} themePreference={themePreference} trialMenu={trialMenu} />
+      <CommandPalette orgId={orgId} role={membership!.role} canUseViews={viewRoles().includes(membership!.role)} trialMenu={trialMenu} />
       {/* The column wraps the top bar and main so the bar sticks to the viewport, not to main (which never scrolls on its own). */}
       <div className="flex flex-1 min-w-0 flex-col">
         <OrgTopBar orgId={orgId} user={user} themePreference={themePreference} />

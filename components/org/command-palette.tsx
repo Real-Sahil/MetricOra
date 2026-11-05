@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
 import { PALETTE_ITEMS, paletteMatches } from "@/lib/nav/palette-items";
+import { inTrialMenu } from "@/lib/nav/trial-menu";
 import { SURFACE_KEYS } from "@/lib/saved-views";
 import { Kbd, KbdGroup } from "@/components/ui/kbd";
 
@@ -15,7 +16,7 @@ export const OPEN_PALETTE_EVENT = "metricora:open-palette";
  * fixed list filtered by role; saved views are fetched when it opens (the API
  * returns only the caller's own and the organisation's shared ones).
  */
-export function CommandPalette({ orgId, role, canUseViews }: { orgId: string; role: string; canUseViews: boolean }) {
+export function CommandPalette({ orgId, role, canUseViews, trialMenu = false }: { orgId: string; role: string; canUseViews: boolean; trialMenu?: boolean }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -57,13 +58,13 @@ export function CommandPalette({ orgId, role, canUseViews }: { orgId: string; ro
   }, [open, orgId, canUseViews]);
 
   const results = useMemo(() => {
-    const pages = paletteMatches(PALETTE_ITEMS, role, query).map((i) => ({ key: `p:${i.label}`, label: i.label, hint: i.task ? "Task" : "Page", href: `/orgs/${orgId}/${i.path}` }));
+    const pages = paletteMatches(trialMenu ? PALETTE_ITEMS.filter((i) => inTrialMenu(i.path)) : PALETTE_ITEMS, role, query).map((i) => ({ key: `p:${i.label}`, label: i.label, hint: i.task ? "Task" : "Page", href: `/orgs/${orgId}/${i.path}` }));
     const words = query.toLowerCase().split(/\s+/).filter(Boolean);
     const saved = views
       .filter((v) => words.every((w) => `${v.name} ${v.surface}`.toLowerCase().includes(w)))
       .map((v) => ({ key: `v:${v.id}`, label: v.name, hint: `${v.shared ? "Shared view" : "My view"} · ${v.surface}`, href: v.href }));
     return [...pages, ...saved].slice(0, 12);
-  }, [query, role, views, orgId]);
+  }, [query, role, views, orgId, trialMenu]);
 
   const go = (href: string) => {
     setOpen(false);

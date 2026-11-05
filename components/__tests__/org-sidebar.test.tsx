@@ -38,10 +38,10 @@ vi.mock("@/components/ui/logo", () => ({ LogoMark: () => null }));
 const ORG = "org_1";
 const ALL_PAGES_KEY = "metricora:sidebar:all-pages";
 
-function renderSidebar(role: string, pathname = `/orgs/${ORG}/dashboard`) {
+function renderSidebar(role: string, pathname = `/orgs/${ORG}/dashboard`, trialMenu = false) {
   nav.pathname = pathname;
   return render(
-    <OrgSidebar orgId={ORG} orgName="Acme Ltd" user={{ name: "Pat Example", email: "pat@example.test" }} role={role} />,
+    <OrgSidebar orgId={ORG} orgName="Acme Ltd" user={{ name: "Pat Example", email: "pat@example.test" }} role={role} trialMenu={trialMenu} />,
   );
 }
 
@@ -132,5 +132,23 @@ describe("OrgSidebar active state and roles", () => {
     fireEvent.click(screen.getByRole("button", { name: /Show the short menu/ }));
     expect(screen.queryByRole("button", { name: "MetricOra" })).toBeNull();
     expect(localStorage.getItem(ALL_PAGES_KEY)).toBe("false");
+  });
+});
+
+describe("OrgSidebar trial menu", () => {
+  beforeEach(() => localStorage.clear());
+  const hrefs = () => screen.getAllByRole("link").map((a) => a.getAttribute("href"));
+
+  it("keeps Core pages and drops parked ones in the group that holds both", () => {
+    localStorage.setItem(ALL_PAGES_KEY, "true");
+    renderSidebar("admin", `/orgs/${ORG}/compliance/deadlines`, true);
+    expect(hrefs()).toContain(`/orgs/${ORG}/compliance/deadlines`);
+    expect(hrefs()).not.toContain(`/orgs/${ORG}/tcfd`);
+  });
+
+  it("shows the parked page when the trial menu is off", () => {
+    localStorage.setItem(ALL_PAGES_KEY, "true");
+    renderSidebar("admin", `/orgs/${ORG}/compliance/deadlines`, false);
+    expect(hrefs()).toContain(`/orgs/${ORG}/tcfd`);
   });
 });
