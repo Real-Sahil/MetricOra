@@ -5,6 +5,7 @@
 // Fires push+in-app notifications to org admins.
 
 import { prisma } from "@/lib/db";
+import { orgsWithModuleOff } from "@/lib/nav/focus-load";
 import { dispatchNotification } from "@/lib/jobs/dispatch";
 import { writeAuditLog } from "@/lib/db/audit";
 import { getLogger } from "@/lib/observability";
@@ -45,8 +46,10 @@ export async function processPermitExpiryMonitoring(): Promise<void> {
     // ── Permit expiry ─────────────────────────────────────────────────────────
     // Find permits whose expiresOn falls within their individual renewalNoticeDays window
     // and haven't had an alert sent yet.
+    const environmentOff = await orgsWithModuleOff("environment");
     const permits = await prisma.environmentalPermit.findMany({
       where: {
+        organizationId: { notIn: environmentOff },
         expiresOn: { not: null },
         expiryAlertSentAt: null,
       },
@@ -111,6 +114,7 @@ export async function processPermitExpiryMonitoring(): Promise<void> {
 
     const conditions = await prisma.permitCondition.findMany({
       where: {
+        organizationId: { notIn: environmentOff },
         nextDueOn: { gte: now, lte: windowEnd },
         conditionAlertSentAt: null,
       },

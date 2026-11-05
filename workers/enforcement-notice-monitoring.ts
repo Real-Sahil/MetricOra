@@ -2,6 +2,7 @@
 // Runs daily: alerts org admins once when a notice compliance deadline has passed.
 
 import { prisma } from "@/lib/db";
+import { orgsWithModuleOff } from "@/lib/nav/focus-load";
 import { dispatchNotification } from "@/lib/jobs/dispatch";
 import { writeAuditLog } from "@/lib/db/audit";
 import { getLogger } from "@/lib/observability";
@@ -13,8 +14,10 @@ export async function processEnforcementNoticeMonitoring(): Promise<void> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    const environmentOff = await orgsWithModuleOff("environment");
     const overdueNotices = await prisma.enforcementNotice.findMany({
       where: {
+        organizationId: { notIn: environmentOff },
         status: { in: ["open", "appealed"] },
         complianceDeadline: { lt: today },
         compliedAt: null,

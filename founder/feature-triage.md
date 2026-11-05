@@ -206,7 +206,7 @@ None of these deletes a feature.
 2. **Trial:** show Core and Second wave, not the full Growth view.
 3. **Pricing:** move the bid carbon pack down to Starter (or into pilots); take parked items off the plan lists; offer one pilot price with a "CRP done with you" setup fee.
 4. **Focus mode:** a per-organisation list of switched-on areas (one additive migration), used to filter the sidebar, quick find and dashboard panels. A parked page opened by URL shows: "This area is switched off for your organisation. Turn it on in Settings, Modules." API routes stay working. **Done (menu, quick find, page notice, Settings, Modules); dashboard panels not yet filtered.**
-5. **Monitors:** skip organisations that don't have the area switched on.
+5. **Monitors:** skip organisations that don't have the area switched on. Done: permit expiry, enforcement notices, tenders, carbon budgets and management system reminders skip organisations that switched their area off; Core monitors always run.
 6. **Marketing:** trim the homepage framework list to SECR, PPN 006 and GHG Protocol; lead with the construction solutions page.
 7. **Later:** review the three unused `lib/` folders, and add tests to any parked area before it's unparked.
 

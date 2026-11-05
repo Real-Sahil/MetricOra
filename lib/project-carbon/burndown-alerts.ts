@@ -6,6 +6,7 @@
 // is reset so a later slip alerts again.
 
 import { prisma } from "@/lib/db";
+import { orgsWithModuleOff } from "@/lib/nav/focus-load";
 import { writeAuditLog } from "@/lib/db/audit";
 import { ROLE_GROUPS } from "@/lib/auth/session";
 import { dispatchNotification } from "@/lib/jobs/dispatch";
@@ -17,8 +18,9 @@ const logger = getLogger("carbon-budget-alerts");
 const RECIPIENT_ROLES = [...new Set([...ROLE_GROUPS.editor, ...ROLE_GROUPS.projectManagers])];
 
 export async function processCarbonBudgetAlerts(asOf = new Date()): Promise<{ checked: number; alerted: number }> {
+  const bidsOff = await orgsWithModuleOff("bids");
   const budgets = await prisma.carbonBudget.findMany({
-    where: { project: { status: { in: ["active", "on_hold"] } } },
+    where: { organizationId: { notIn: bidsOff }, project: { status: { in: ["active", "on_hold"] } } },
     select: {
       id: true,
       organizationId: true,

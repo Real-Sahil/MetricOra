@@ -5,6 +5,7 @@
  * from the Tenders page for one organisation.
  */
 import { prisma } from "@/lib/db";
+import { orgsWithModuleOff } from "@/lib/nav/focus-load";
 import { Prisma } from "@prisma/client";
 import { fetchTenderReleases, matchWatch, summariseRelease, tenderFlags, type NoticeSummary, type OcdsRelease, type WatchCriteria } from "./fts";
 
@@ -104,8 +105,9 @@ export type WatchRunResult = { checked: number; notices: number; added: number }
  */
 export async function runTenderWatches(opts: { organizationId?: string; now?: Date } = {}): Promise<WatchRunResult> {
   const now = opts.now ?? new Date();
+  const bidsOff = await orgsWithModuleOff("bids");
   const watches: WatchRow[] = await prisma.tenderWatch.findMany({
-    where: { enabled: true, ...(opts.organizationId ? { organizationId: opts.organizationId } : {}) },
+    where: { enabled: true, organizationId: opts.organizationId ?? { notIn: bidsOff } },
     select: { organizationId: true, cpvPrefixes: true, regions: true, keywords: true, minValue: true, lastCheckedAt: true },
   });
   if (!watches.length) return { checked: 0, notices: 0, added: 0 };

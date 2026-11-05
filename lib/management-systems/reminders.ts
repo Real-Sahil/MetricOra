@@ -1,3 +1,4 @@
+import { orgsWithModuleOff } from "@/lib/nav/focus-load";
 import { prisma } from "@/lib/db";
 import { dispatchNotification } from "@/lib/jobs/dispatch";
 import { getLogger } from "@/lib/observability";
@@ -232,7 +233,8 @@ export async function collectDue(today: Date): Promise<Due[]> {
 export async function processManagementSystemReminders(
   today = new Date(iso(new Date()) + "T00:00:00Z"),
 ): Promise<number> {
-  const due = await collectDue(today);
+  const msOff = new Set(await orgsWithModuleOff("management-systems"));
+  const due = (await collectDue(today)).filter((d) => !msOff.has(d.orgId));
   let sent = 0;
   const editorsByOrg = new Map<string, string[]>();
 
