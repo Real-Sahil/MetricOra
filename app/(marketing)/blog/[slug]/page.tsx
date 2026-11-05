@@ -104,7 +104,7 @@ export default async function BlogPostPage({ params }: Props) {
           />
           {related.length > 0 ? (
             <nav aria-labelledby="related-heading" className="not-prose mt-12 border-t border-mk-line pt-8">
-              <h2 id="related-heading" className="text-[18px] font-semibold">Related reading</h2>
+              <h2 id="related-heading" className="text-[18px] font-medium">Related reading</h2>
               <ul className="mt-4 grid gap-4">
                 {related.map((r) => (
                   <li key={r.slug}>

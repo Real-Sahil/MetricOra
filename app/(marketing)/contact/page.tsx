@@ -44,7 +44,7 @@ export default function ContactPage() {
               ))}
             </ul>
             <div className="flex flex-col gap-3">
-              <p className="text-[15px] font-semibold">At the end you will have</p>
+              <p className="text-[15px] font-medium">At the end you will have</p>
               <CheckList items={["A published snapshot for the period", "A report with its CSV calculation trail", "Evidence linked to each record and a full audit trail"]} />
             </div>
             <p className="text-[15px] text-mk-text-2">

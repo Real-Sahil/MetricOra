@@ -194,10 +194,10 @@ export default function PricingPage() {
               <p className="text-[15px] text-mk-text-2">{t.forWho}</p>
               <div>
                 <p className="flex items-baseline gap-2">
-                  <span className="text-[40px] font-semibold tracking-[-0.03em]">{t.price}</span>
+                  <span className="text-[40px] font-medium tracking-[-0.03em] tabular-nums">{t.price}</span>
                   <span className="text-[15px] text-mk-text-3">{t.period}</span>
                 </p>
-                <p className="text-[13px] text-mk-text-3">{t.note}</p>
+                <p className="text-[13px] tabular-nums text-mk-text-3">{t.note}</p>
               </div>
               <ButtonLink href={t.cta.href} variant={t.highlight ? "primary" : "secondary"}>
                 {t.cta.label}
@@ -232,7 +232,7 @@ export default function PricingPage() {
           <dl className="divide-y divide-mk-line border-y border-mk-line">
             {FAQ.map((f) => (
               <div key={f.q} className="py-6">
-                <dt className="text-[16px] font-semibold">{f.q}</dt>
+                <dt className="text-[16px] font-medium">{f.q}</dt>
                 <dd className="mt-2 max-w-[62ch] text-[15px] leading-relaxed text-mk-text-2">{f.a}</dd>
               </div>
             ))}

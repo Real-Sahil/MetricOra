@@ -152,7 +152,7 @@ export function H2({ children, className }: { children: ReactNode; className?: s
 }
 
 export function H3({ children, className }: { children: ReactNode; className?: string }) {
-  return <h3 className={cn("text-[18px] font-semibold leading-snug tracking-[-0.01em]", className)}>{children}</h3>;
+  return <h3 className={cn("text-[18px] font-medium leading-snug tracking-[-0.01em]", className)}>{children}</h3>;
 }
 
 export function Lead({ children, tone = "light", className }: { children: ReactNode; tone?: Tone; className?: string }) {
@@ -181,7 +181,7 @@ export function ButtonLink({
   className?: string;
 }) {
   const base =
-    "inline-flex h-11 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mk-accent";
+    "inline-flex h-11 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mk-accent";
   const styles =
     variant === "primary"
       ? "bg-mk-accent text-white hover:bg-mk-accent-hover"
@@ -336,7 +336,7 @@ export function ClosingCta({ title, lead }: { title: ReactNode; lead: ReactNode 
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
           <Link
             href="/sign-up"
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-white px-6 text-[15px] font-semibold text-mk-accent hover:bg-mk-accent-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-white px-6 text-[15px] font-medium text-mk-accent hover:bg-mk-accent-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             Start a 30-day trial
             <ArrowRight aria-hidden="true" className="h-4 w-4" />

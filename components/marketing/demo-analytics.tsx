@@ -120,7 +120,7 @@ function Doughnut({ seen }: { seen: boolean }) {
       </svg>
       <div className="absolute inset-0 grid place-items-center text-center">
         <div>
-          <p className="text-[14px] font-semibold leading-none text-mk-text tabular-nums">{SCOPE_SHARES[2].toFixed(1)}%</p>
+          <p className="text-[14px] font-medium leading-none text-mk-text tabular-nums">{SCOPE_SHARES[2].toFixed(1)}%</p>
           <p className="mt-1 text-[11px] text-mk-text-3">{SCOPES[2].label}</p>
         </div>
       </div>
@@ -155,18 +155,18 @@ export function DemoAnalytics() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="font-sans text-[13px] text-mk-text-3">Total footprint, Scopes 1-3</p>
-            <p className="mt-1 text-[34px] font-semibold leading-none tracking-[-0.03em] text-mk-text tabular-nums sm:text-[40px]">
+            <p className="mt-1 text-[34px] font-medium leading-none tracking-[-0.03em] text-mk-text tabular-nums sm:text-[40px]">
               <CountUp to={TOTAL_KG / 1000} run={seen} reduce={reduce} /> <span className="text-[20px] font-medium text-mk-text-2">tCO₂e</span>
             </p>
           </div>
           <dl className="flex gap-6 text-[13px]">
             <div>
               <dt className="text-mk-text-3">vs previous period</dt>
-              <dd className="mt-0.5 font-semibold text-mk-text tabular-nums">{PERIOD_CHANGE}</dd>
+              <dd className="mt-0.5 font-medium text-mk-text tabular-nums">{PERIOD_CHANGE}</dd>
             </div>
             <div>
               <dt className="text-mk-text-3">Calculated records</dt>
-              <dd className="mt-0.5 font-semibold text-mk-text tabular-nums">{CALCULATED_RECORDS}</dd>
+              <dd className="mt-0.5 font-medium text-mk-text tabular-nums">{CALCULATED_RECORDS}</dd>
             </div>
           </dl>
         </div>

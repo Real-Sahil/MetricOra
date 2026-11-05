@@ -231,7 +231,7 @@ export function SiteNav(_props: { theme?: "light" | "dark" } = {}) {
             {NAV.map((entry) =>
               isGroup(entry) ? (
                 <div key={entry.label}>
-                  <p className="mb-2 text-[15px] font-semibold text-mk-text">{entry.label}</p>
+                  <p className="mb-2 text-[15px] font-medium text-mk-text">{entry.label}</p>
                   {entry.columns.map((col, ci) => (
                     <div key={col.heading ?? ci} className={ci > 0 ? "mt-4" : undefined}>
                       {col.heading ? <p className="mb-1 text-[13px] text-mk-text-3">{col.heading}</p> : null}
@@ -249,7 +249,7 @@ export function SiteNav(_props: { theme?: "light" | "dark" } = {}) {
                 </div>
               ) : (
                 <div key={entry.href}>
-                  <Link href={entry.href} onClick={() => setOpen(false)} className="block py-2 text-[15px] font-semibold text-mk-text hover:text-mk-text-2">
+                  <Link href={entry.href} onClick={() => setOpen(false)} className="block py-2 text-[15px] font-medium text-mk-text hover:text-mk-text-2">
                     {entry.label}
                   </Link>
                 </div>

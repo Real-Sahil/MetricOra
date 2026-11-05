@@ -63,7 +63,7 @@ export function SiteFuelCalculator() {
               />
             </div>
             <div className="flex items-center justify-between gap-3 sm:justify-end">
-              <p className="text-[15px] font-medium text-mk-text sm:min-w-[110px] sm:text-right">{nf3.format(l.tonnes)} tCO2e</p>
+              <p className="text-[15px] font-medium tabular-nums text-mk-text sm:min-w-[110px] sm:text-right">{nf3.format(l.tonnes)} tCO2e</p>
               {rows.length > 1 ? (
                 <button
                   type="button"
@@ -93,7 +93,7 @@ export function SiteFuelCalculator() {
 
       <div className="mt-6 border-t border-mk-line pt-5" role="status" aria-live="polite">
         <p className="text-[13px] text-mk-text-2">Total Scope 1 fuel emissions</p>
-        <p className="font-display text-[40px] font-light leading-none tracking-[-0.02em] text-mk-text sm:text-[52px]">
+        <p className="font-display text-[40px] font-light leading-none tracking-[-0.02em] tabular-nums text-mk-text sm:text-[52px]">
           {nf.format(total)} <span className="text-[20px]">tCO2e</span>
         </p>
         <p className="mt-2 text-[13px] text-mk-text-2">Litres multiplied by the DESNZ 2026 factor, divided by 1,000. Nothing is stored or sent.</p>

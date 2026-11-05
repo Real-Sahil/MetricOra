@@ -47,7 +47,7 @@ export function ContactForm() {
     return (
       <div className="flex flex-col items-center gap-4 py-12 text-center">
         <CheckCircle className="h-10 w-10 text-mk-accent" />
-        <h3 className="text-lg font-semibold text-mk-text tracking-tight">Request received</h3>
+        <h3 className="text-lg font-medium text-mk-text tracking-tight">Request received</h3>
         <p className="text-sm text-mk-text-3 max-w-[40ch] leading-relaxed">
           We'll be in touch shortly. Check your inbox for a confirmation.
         </p>
@@ -133,7 +133,7 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-mk-accent px-6 text-[15px] font-semibold text-white transition-colors hover:bg-mk-accent-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mk-accent disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.97]"
+        className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-mk-accent px-6 text-[15px] font-medium text-white transition-colors hover:bg-mk-accent-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mk-accent disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.97]"
       >
         {isSubmitting ? (
           <>
