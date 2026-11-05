@@ -27,4 +27,12 @@ describe("focus modules", () => {
     expect(inMenu({ trialMenu: true, focus: [] }, "tcfd")).toBe(false);
     expect(inMenu({ trialMenu: false, focus: [] }, "tcfd")).toBe(true);
   });
+  it("answers the dashboard's Social and Audit tiles from their pages' modules", () => {
+    expect(inMenu({ focus: ["bids"] }, "social-value")).toBe(true);
+    expect(inMenu({ focus: ["environment"] }, "social-value")).toBe(false);
+    expect(inMenu({ focus: ["disclosure"] }, "compliance/crosswalk")).toBe(true);
+    expect(inMenu({ focus: ["bids"] }, "compliance/crosswalk")).toBe(false);
+    expect(inMenu({ trialMenu: true }, "social-value")).toBe(true);
+    expect(inMenu({ trialMenu: true }, "compliance/crosswalk")).toBe(false);
+  });
 });

@@ -15,7 +15,10 @@ export type SummaryViewProps = {
   total: { value: string; unit: string; scopes: { label: string; value: string }[] };
   target: { line: string | null; hasTarget: boolean; actual: string | null; level: string | null; status: "ahead" | "on_track" | "behind" | null; partial: boolean };
   hotspot: { line: string | null; sharePct: number | null };
-  social: { line: string | null; phase: SocialPhase };
+  /** Null when social value is switched off for the organisation (focus mode or trial menu). */
+  social: { line: string | null; phase: SocialPhase } | null;
+  /** False when the disclosure crosswalk is switched off; the Audit tile is then left out. */
+  showAudit: boolean;
   audit: { regimeLabel: string; satisfied: number; applicable: number; partial: number; gap: number; percent: number | null } | null;
   needsYou: { line: string | null; pendingSubmissions: number; openReviews: number };
   /** Analytics panels, rendered under the tiles when the period has data. */
@@ -46,7 +49,9 @@ export function SummaryView(p: SummaryViewProps) {
   const statusWord = p.target.status === null ? null
     : p.target.partial ? "Year to date"
     : p.target.status === "behind" ? "Above the path" : p.target.status === "ahead" ? "Below the path" : "In line";
-  const phaseAt = SOCIAL_PHASE_ORDER.indexOf(p.social.phase);
+  const phaseAt = p.social ? SOCIAL_PHASE_ORDER.indexOf(p.social.phase) : -1;
+  // The lower row shares six columns between the tiles that are on (literal classes for Tailwind).
+  const lowerSpan = ["md:col-span-6", "md:col-span-3", "md:col-span-2"][(p.social ? 1 : 0) + (p.showAudit ? 1 : 0)];
 
   return (
     <div className="earthy min-h-full px-4 py-8 sm:px-8">
@@ -116,7 +121,7 @@ export function SummaryView(p: SummaryViewProps) {
                 )}
               </Tile>
             </div>
-            <div className="md:col-span-2">
+            <div className={lowerSpan}>
               <Tile title="Biggest source" href={`${root}/records`} hrefLabel="Open the records">
                 {p.hotspot.line ? (
                   <>
@@ -130,7 +135,8 @@ export function SummaryView(p: SummaryViewProps) {
                 )}
               </Tile>
             </div>
-            <div className="md:col-span-2">
+            {p.social ? (
+            <div className={lowerSpan}>
               <Tile title="Social" href={`${root}/social-value`} hrefLabel="Open social value">
                 <p className="text-base">{p.social.line}</p>
                 <ol className="flex gap-1" aria-label="Social data phases">
@@ -140,7 +146,9 @@ export function SummaryView(p: SummaryViewProps) {
                 </ol>
               </Tile>
             </div>
-            <div className="md:col-span-2">
+            ) : null}
+            {p.showAudit ? (
+            <div className={lowerSpan}>
               <Tile title="Audit" href={p.audit ? `${root}/compliance/crosswalk` : `${root}/settings/operations`} hrefLabel={p.audit ? "Open the crosswalk" : "Choose a disclosure regime"}>
                 {p.audit && p.audit.percent != null ? (
                   <>
@@ -161,6 +169,7 @@ export function SummaryView(p: SummaryViewProps) {
                 )}
               </Tile>
             </div>
+            ) : null}
           </div>
         )}
 

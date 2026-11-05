@@ -10,6 +10,8 @@ import { loadRegimeReadiness } from "@/lib/compliance/regime-readiness";
 import { loadSummaryCharts } from "@/lib/dashboard/summary-charts";
 import { SummaryChartsView } from "@/components/earthy/summary-charts";
 import { SummaryView } from "@/components/earthy/summary-view";
+import { trialMenuApplies } from "@/lib/nav/trial-menu";
+import { inMenu } from "@/lib/nav/modules";
 
 // Server wrapper for the Executive Summary: a few cheap reads, one grouped loader statement, then the
 // closed set of sentences. Rendered by dashboard/page.tsx.
@@ -24,8 +26,13 @@ export async function EarthySummary({ orgId, firstName }: { orgId: string; first
     loadAnalyticsPeriod(orgId),
     prisma.organization.findUnique({ where: { id: orgId }, select: { disclosureRegime: true } }),
   ]);
+  // Same answer as the menu (focus mode, else the trial menu); a missing focus column means no focus.
+  const focusRow = await prisma.organization.findUnique({ where: { id: orgId }, select: { focusModules: true } }).catch(() => null);
+  const menu = { trialMenu: org ? trialMenuApplies(org) : false, focus: focusRow?.focusModules ?? [] };
+  const showSocial = inMenu(menu, "social-value");
+  const showAudit = inMenu(menu, "compliance/crosswalk");
   const regime = isDisclosureRegime(regimeRow?.disclosureRegime) ? regimeRow.disclosureRegime : null;
-  const readiness = regime ? await loadRegimeReadiness(orgId, regime, prisma) : null;
+  const readiness = regime && showAudit ? await loadRegimeReadiness(orgId, regime, prisma) : null;
   const f = formatters(orgFormat(org ?? {}));
   const fmt = { tonnes: (n: number) => `${f.tonnes(n)} tCO2e`, percent: (n: number) => f.percent(n / 100, 1) };
 
@@ -71,7 +78,8 @@ export async function EarthySummary({ orgId, firstName }: { orgId: string; first
         partial: result?.partial ?? false,
       }}
       hotspot={{ line: hotspotLine(s?.hotspot ?? null, fmt), sharePct: s?.hotspot?.sharePct ?? null }}
-      social={{ line: socialPhaseLine(s?.socialPhase ?? null), phase: s?.socialPhase ?? "data_mapping" }}
+      social={showSocial ? { line: socialPhaseLine(s?.socialPhase ?? null), phase: s?.socialPhase ?? "data_mapping" } : null}
+      showAudit={showAudit}
       audit={readiness ? { regimeLabel: readiness.label, satisfied: readiness.satisfied, applicable: readiness.applicable, partial: readiness.partial, gap: readiness.gap, percent: readiness.percent } : null}
       charts={charts && s ? (
         <SummaryChartsView
