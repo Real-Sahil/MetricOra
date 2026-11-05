@@ -2,190 +2,289 @@
   {
     "slug": "market-based-vs-location-based-scope-2",
     "title": "Market-based vs location-based Scope 2: which to report, and why both",
-    "description": "",
+    "description": "Location-based Scope 2 uses the average grid factor. Market-based uses your electricity contracts. What each measures, which one SECR asks for and why the GHG Protocol wants both.",
     "date": "2026-10-30",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "Scope 2",
+      "Electricity",
+      "SECR",
+      "GHG Protocol"
+    ]
   },
   {
     "slug": "how-to-calculate-site-fuel-emissions-construction",
     "title": "How to calculate site fuel emissions on a construction project",
-    "description": "",
+    "description": "Diesel in plant, generators and site vehicles is usually the biggest Scope 1 line a contractor has. Here is the sum, the right factor for each fuel, a worked example and the mistakes that make figures disagree.",
     "date": "2026-10-28",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "Scope 1",
+      "Construction",
+      "Fuel",
+      "Conversion factors"
+    ]
   },
   {
     "slug": "secr-report-template-and-example",
     "title": "SECR report template: what to include, with an example layout",
-    "description": "",
+    "description": "There is no official SECR form. The law lists what the directors' report must contain. Here is a plain layout that covers each item, a worked example table and what auditors tend to ask.",
     "date": "2026-10-28",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "SECR",
+      "Compliance",
+      "Template",
+      "Reporting"
+    ]
   },
   {
     "slug": "do-subcontractors-need-a-carbon-reduction-plan",
     "title": "Do subcontractors need a Carbon Reduction Plan?",
-    "description": "",
+    "description": "Under the government's PPN guidance, the contracting party needs the plan, not every subcontractor. But your main contractor may still ask you for one. Here is the rule, the exceptions and what to do when a buyer asks.",
     "date": "2026-10-27",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "PPN 006",
+      "Subcontractors",
+      "Public sector",
+      "Compliance"
+    ]
   },
   {
     "slug": "secr-vs-ppn-006",
     "title": "SECR vs PPN 006: what is the difference, and do you need both?",
-    "description": "",
+    "description": "SECR is a company law disclosure in your annual report. PPN 006 is a bid requirement for large central government contracts. Different trigger, different document, overlapping data. Here is how they compare and how to run one dataset for both.",
     "date": "2026-10-27",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "SECR",
+      "PPN 006",
+      "Compliance",
+      "Public sector"
+    ]
   },
   {
     "slug": "secr-home-working-emissions",
     "title": "Do you need to report home working emissions under SECR?",
-    "description": "",
+    "description": "No. Home working is not one of the items the SECR regulations require. It is a voluntary Scope 3 disclosure. This post explains what SECR does require, what DESNZ publishes for home working, and how to disclose it properly if a client asks.",
     "date": "2026-10-26",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "SECR",
+      "Scope 3",
+      "Homeworking",
+      "Compliance"
+    ]
   },
   {
     "slug": "what-is-ppn-006",
     "title": "What is PPN 006? A plain-English guide for bidders",
-    "description": "",
+    "description": "PPN 006 is the Cabinet Office procurement policy note that asks bidders for large central government contracts to publish a Carbon Reduction Plan. Here is what it is, who it covers, what changed from PPN 06/21 and what to do about it.",
     "date": "2026-10-26",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "PPN 006",
+      "Carbon Reduction Plan",
+      "Public sector",
+      "Compliance"
+    ]
   },
   {
     "slug": "what-is-secr",
     "title": "What is SECR? Streamlined Energy and Carbon Reporting explained",
-    "description": "",
+    "description": "SECR is the UK rule that makes quoted companies and large companies and LLPs disclose their energy use and carbon emissions in their annual report. Here is what it is, what you report, where it goes and how it differs from other schemes.",
     "date": "2026-10-26",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "SECR",
+      "Compliance",
+      "Scope 1",
+      "Scope 2"
+    ]
   },
   {
     "slug": "who-has-to-report-under-secr",
     "title": "Who has to report under SECR? Thresholds, groups and exemptions",
-    "description": "",
+    "description": "Quoted companies, large unquoted companies and large LLPs must report under SECR. This post sets out the size tests, how groups and subsidiaries are treated, the 40,000 kWh exemption and the cases that catch people out.",
     "date": "2026-10-26",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "SECR",
+      "Compliance",
+      "Scope 1",
+      "Scope 2"
+    ]
   },
   {
     "slug": "ppn-006-carbon-reduction-plan-example",
     "title": "PPN 006 Carbon Reduction Plan example: a filled plan for a civils contractor",
-    "description": "",
+    "description": "A worked Carbon Reduction Plan for a fictional Yorkshire civils contractor, section by section, with the figures, the Scope 3 explanations and the sign-off an evaluator looks for.",
     "date": "2026-09-25",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "PPN 006",
+      "Public sector",
+      "Compliance",
+      "Scope 3"
+    ]
   },
   {
     "slug": "ppn-006-carbon-reduction-plan-guide",
     "title": "PPN 006 Carbon Reduction Plans: what bidders for UK government contracts need",
-    "description": "",
+    "description": "PPN 006 replaced PPN 06/21 under the Procurement Act 2023. It keeps the Carbon Reduction Plan requirement for contracts of £5 million a year or more. Here is what the plan must contain and how to keep it consistent.",
     "date": "2026-09-25",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "PPN 006",
+      "Public sector",
+      "Compliance",
+      "Scope 3"
+    ]
   },
   {
     "slug": "ppn-026-social-value-model-contractors",
     "title": "PPN 026: the new Social Value Model, explained for contractors",
-    "description": "",
+    "description": "From 1 January 2027, central government buyers score social value on jobs and skills only, for contracts of £1 million or more. What changed from PPN 002, how it is weighted, and what to track from day one of a contract.",
     "date": "2026-09-25",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "PPN 026",
+      "Social value",
+      "Public sector",
+      "Compliance"
+    ]
   },
   {
     "slug": "scope-1-2-3-emissions-for-contractors",
     "title": "Scope 1, 2 and 3 emissions for construction contractors, explained",
-    "description": "",
+    "description": "The GHG Protocol sorts emissions into three scopes. Here is what falls in each for a UK contractor, with the data source for each line and the factors used to convert it.",
     "date": "2026-09-25",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "Scope 1",
+      "Scope 2",
+      "Scope 3",
+      "Construction"
+    ]
   },
   {
     "slug": "secr-reporting-guide-for-contractors",
     "title": "SECR reporting: who must report, what to disclose and how to prepare",
-    "description": "",
+    "description": "Streamlined Energy and Carbon Reporting applies to quoted companies and to large unquoted companies and LLPs in the UK. This guide sets out the thresholds, the required disclosures and a practical preparation checklist.",
     "date": "2026-09-25",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "SECR",
+      "Compliance",
+      "Scope 1",
+      "Scope 2"
+    ]
   },
   {
     "slug": "uk-ghg-conversion-factors-2026-what-changed",
     "title": "UK GHG conversion factors 2026: what changed and which set to use",
-    "description": "",
+    "description": "The 2026 UK Government conversion factors cut the grid electricity factor by about 26%. Here are the changes that matter most to contractors, taken from the DESNZ flat files, and how to choose the right year.",
     "date": "2026-09-25",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "Emission factors",
+      "DEFRA",
+      "Scope 2",
+      "Methodology"
+    ]
   },
   {
     "slug": "embodied-carbon-data-quality",
     "title": "Embodied carbon: the evidence says data quality is the bottleneck",
-    "description": "",
+    "description": "A review of the research on cutting embodied carbon in buildings and infrastructure points to measurement and data quality as the main barriers. Here is what that means on a live project.",
     "date": "2026-09-24",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "Embodied carbon",
+      "PAS 2080",
+      "Research"
+    ]
   },
   {
     "slug": "location-and-market-based-scope-2",
     "title": "Location-based and market-based Scope 2, with one office",
-    "description": "",
+    "description": "The two Scope 2 methods measure different things. Here is how MetricOra reports both, using a head office with a REGO-backed supply.",
     "date": "2026-09-24",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "Scope 2",
+      "Electricity",
+      "SECR"
+    ]
   },
   {
     "slug": "plant-idling-fuel-and-carbon",
     "title": "Idling plant: what field research says about fuel burnt for no work",
-    "description": "",
+    "description": "Researchers who logged diesel construction equipment in the field found idle time drives fuel use and CO₂. Here is how to measure idling on your own sites and what to do with the numbers.",
     "date": "2026-09-24",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "Scope 1",
+      "Plant",
+      "Research"
+    ]
   },
   {
     "slug": "spend-based-scope-3-sourced-factors",
     "title": "Spend-based Scope 3 with factors you can source",
-    "description": "",
+    "description": "Pricing purchased goods from spend is an estimate. It should at least use a published factor for the right industry, at the right prices. Here is how MetricOra does it.",
     "date": "2026-09-24",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "Scope 3",
+      "Spend",
+      "Methodology"
+    ]
   },
   {
     "slug": "waste-ticket-to-reported-tonne",
     "title": "From a waste ticket to a reported tonne",
-    "description": "",
+    "description": "What happens to a skip ticket between the site and the Scope 3 line of a report, and where each step is recorded.",
     "date": "2026-09-24",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "Waste",
+      "Field capture",
+      "Scope 3"
+    ]
   },
   {
     "slug": "why-scope-3-figures-disagree",
     "title": "Why Scope 3 figures disagree, and what makes yours defensible",
-    "description": "",
+    "description": "Peer-reviewed studies find that value-chain emissions are the least consistent part of corporate carbon data. Here is what they found, and the habits that keep your own Scope 3 figure checkable.",
     "date": "2026-09-24",
     "author": "MetricOra",
     "readingTime": "5 min read",
-    "keywords": []
+    "keywords": [
+      "Scope 3",
+      "Research",
+      "Assurance"
+    ]
   }
 ]

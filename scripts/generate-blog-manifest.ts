@@ -31,11 +31,13 @@ function generateManifest() {
       posts.push({
         slug,
         title: data.title || slug,
-        description: data.description || "",
+        // Posts write `excerpt` and `tags` in front matter; accept the
+        // schema.org-style names too.
+        description: data.description || data.excerpt || "",
         date: data.date || new Date().toISOString(),
         author: data.author || "MetricOra",
         readingTime: data.readingTime || "5 min read",
-        keywords: data.keywords || [],
+        keywords: data.keywords || data.tags || [],
       });
     }
 
