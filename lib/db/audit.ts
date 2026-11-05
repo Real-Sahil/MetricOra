@@ -457,7 +457,8 @@ export type AuditAction =
   | "external_credential.deleted"
   | "external_credential.validated"
   | "sso_config.created"
-  | "sso_config.updated";
+  | "sso_config.updated"
+  | "organization.focus_modules_updated";
 
 export async function writeAuditLog(params: {
   organizationId: string;

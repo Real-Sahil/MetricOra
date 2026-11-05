@@ -15,6 +15,8 @@ import { localeForCountry, orgFormat } from "@/lib/i18n/org-format";
 import { OrgLocaleProvider } from "@/components/org/org-locale";
 import { buttonVariants } from "@/components/ui/button";
 import { trialMenuApplies } from "@/lib/nav/trial-menu";
+import { inMenu } from "@/lib/nav/modules";
+import { headers } from "next/headers";
 import { getSelectedProject } from "@/lib/project/selected";
 import { brandingCss, brandingVars } from "@/lib/branding/css-vars";
 import { EarthyTabBar } from "@/components/earthy/tab-bar";
@@ -161,6 +163,11 @@ export default async function OrgLayout({ children, params }: OrgLayoutProps) {
 
   const cssVars = brandingCss(brandingVars(branding));
   const trialMenu = trialMenuApplies(org);
+  // Chosen focus (Settings, Modules). Read apart from getOrgBasics, and a missing column (a deploy that lands before its migration) means no focus.
+  const focusRow = await prisma.organization.findUnique({ where: { id: orgId }, select: { focusModules: true } }).catch(() => null);
+  const focus = focusRow?.focusModules ?? [];
+  const pagePath = ((await headers()).get("x-pathname") ?? "").replace(`/orgs/${orgId}/`, "").replace(/^\/+/, "");
+  const switchedOff = pagePath !== "" && focus.length > 0 && !inMenu({ trialMenu, focus }, pagePath);
 
   // Failed renewal: admins see the grace period, or that new work is blocked.
   const payment =
@@ -186,8 +193,8 @@ export default async function OrgLayout({ children, params }: OrgLayoutProps) {
     <div className="flex flex-col md:flex-row min-h-[100dvh] earthy earthy-shell">
       {cssVars && <style>{cssVars}</style>}
       <AppearanceSync saved={themePreference} />
-      <OrgSidebar orgId={orgId} orgName={org.name} user={user} role={membership!.role} projects={projects} selectedProjectId={selectedProject?.id ?? null} themePreference={themePreference} trialMenu={trialMenu} />
-      <CommandPalette orgId={orgId} role={membership!.role} canUseViews={viewRoles().includes(membership!.role)} trialMenu={trialMenu} />
+      <OrgSidebar orgId={orgId} orgName={org.name} user={user} role={membership!.role} projects={projects} selectedProjectId={selectedProject?.id ?? null} themePreference={themePreference} trialMenu={trialMenu} focus={focus} />
+      <CommandPalette orgId={orgId} role={membership!.role} canUseViews={viewRoles().includes(membership!.role)} trialMenu={trialMenu} focus={focus} />
       {/* The column wraps the top bar and main so the bar sticks to the viewport, not to main (which never scrolls on its own). */}
       <div className="flex flex-1 min-w-0 flex-col">
         <OrgTopBar orgId={orgId} user={user} themePreference={themePreference} />
@@ -205,6 +212,12 @@ export default async function OrgLayout({ children, params }: OrgLayoutProps) {
             </div>
           ) : null}
           <OrgLocaleProvider locale={localeForCountry(org?.hqCountry)} currency={orgFormat(org ?? {}).currency}>
+            {switchedOff ? (
+              <div role="status" className="border-b border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-900 sm:px-8">
+                This area is switched off for your organisation, so it is not in the menu. Your records here are untouched.{" "}
+                <a href={`/orgs/${orgId}/settings/modules`} className="font-medium underline underline-offset-2">Turn it on in Settings, Modules</a>
+              </div>
+            ) : null}
             <PageTransition>{children}</PageTransition>
           </OrgLocaleProvider>
         </main>

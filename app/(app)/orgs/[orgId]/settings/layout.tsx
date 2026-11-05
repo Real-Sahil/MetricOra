@@ -10,6 +10,7 @@ const TABS = [
   { label: "Electricity contracts", segment: "energy-instruments" },
   { label: "Emission factors", segment: "factors" },
   { label: "Carbon price", segment: "carbon-price" },
+  { label: "Modules", segment: "modules" },
   { label: "AI assistance", segment: "ai" },
   { label: "Branding",   segment: "branding" },
   { label: "Audit Log",  segment: "audit" },

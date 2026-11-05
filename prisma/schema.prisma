@@ -214,6 +214,8 @@ model Organization {
   consolidationApproach        ConsolidationApproach @default(operational_control) @map("consolidation_approach")
   plan                         String                @default("trial") @map("plan")
   isPilot                      Boolean               @default(false) @map("is_pilot")
+  /// Switched-on optional areas (lib/nav/modules.ts keys). Empty = no focus: the menu follows the plan. Only shapes what is shown; API routes and limits are unchanged.
+  focusModules                 String[]              @default([]) @map("focus_modules")
   supplierPasswordRotationDays Int?                  @map("supplier_password_rotation_days")
   supplierAccountExpiryDays    Int?                  @map("supplier_account_expiry_days")
   /// How long (in days) to keep field submission evidence files. NULL = keep forever.
