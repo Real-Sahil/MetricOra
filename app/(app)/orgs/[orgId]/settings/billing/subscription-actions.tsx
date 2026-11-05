@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PLAN_ANNUAL_TOTAL, PLAN_LABELS } from "@/lib/billing/limits";
+import { formatPlanPrice, PLAN_ANNUAL_TOTAL, PLAN_LABELS } from "@/lib/billing/limits";
 import { Loader2 } from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
 
@@ -123,7 +123,7 @@ export function SubscriptionActions({
           >
             {pending === plan && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
             Subscribe to {PLAN_LABELS[plan]}
-            {plan === "essentials" && ` (£${PLAN_ANNUAL_TOTAL.essentials}/yr)`}
+            {plan === "essentials" && ` (${formatPlanPrice(PLAN_ANNUAL_TOTAL.essentials)}/yr)`}
           </Button>
         ))}
         {hasPaymentMethod && (

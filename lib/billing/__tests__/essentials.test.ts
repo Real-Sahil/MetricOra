@@ -5,8 +5,8 @@ vi.mock("@/lib/db", () => ({ prisma: {} }));
 import { getLimits, hasFeature, minimumPlanFor, PLAN_ANNUAL_TOTAL, reportTypeAllowed } from "../limits";
 
 describe("Essentials plan", () => {
-  it("is £199 a year for one site, two web users and no frameworks", () => {
-    expect(PLAN_ANNUAL_TOTAL.essentials).toBe(199);
+  it("is £199.99 a year for one site, two web users and no frameworks", () => {
+    expect(PLAN_ANNUAL_TOTAL.essentials).toBe(199.99);
     expect(getLimits("essentials")).toMatchObject({ facilities: 1, members: 2, frameworks: 0 });
   });
 

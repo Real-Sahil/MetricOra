@@ -82,20 +82,33 @@ const PLAN_LIMITS: Record<Plan, PlanLimits> = {
   },
 };
 
-// GBP; no VAT is charged while MetricOra is not VAT-registered. `annual` is the per-month equivalent of the yearly price
-// (two months free): Starter £990/yr, Growth £2,990/yr. Essentials is yearly
-// only (£199/yr; `monthly` 0 means no monthly price). Enterprise is
-// sales-led from £9,000/yr (£750/month), billed annually by invoice.
+// GBP; no VAT is charged while MetricOra is not VAT-registered. Every price
+// is one penny under a round figure. They sit at percentiles of the market
+// band found in the pricing research (founder/pricing-strategy.md): Starter
+// near the 25th (about £1,500 a year), Growth near the median (about £3,000)
+// and the Enterprise floor near the 75th (about £6,000). `annual` is the
+// per-month equivalent of the yearly price (about two months free): Starter
+// £1,499.99/yr, Growth £2,999.99/yr. Essentials is yearly only (£199.99/yr;
+// `monthly` 0 means no monthly price). Enterprise is sales-led from
+// £5,999.99/yr, billed annually by invoice.
 export const PLAN_PRICES: Record<Plan, { monthly: number; annual: number }> = {
-  trial:      { monthly: 0,   annual: 0 },
-  essentials: { monthly: 0,   annual: 16.58 },
-  starter:    { monthly: 99,  annual: 82.5 },
-  growth:     { monthly: 299, annual: 249.17 },
-  enterprise: { monthly: 750, annual: 750 },
+  trial:      { monthly: 0,      annual: 0 },
+  essentials: { monthly: 0,      annual: 16.66 },
+  starter:    { monthly: 149.99, annual: 124.99 },
+  growth:     { monthly: 299.99, annual: 249.99 },
+  enterprise: { monthly: 499.99, annual: 499.99 },
 };
 
 /** Yearly price for the self-serve plans (what Stripe's annual price charges). */
-export const PLAN_ANNUAL_TOTAL: Record<"essentials" | "starter" | "growth", number> = { essentials: 199, starter: 990, growth: 2990 };
+export const PLAN_ANNUAL_TOTAL: Record<"essentials" | "starter" | "growth", number> = { essentials: 199.99, starter: 1499.99, growth: 2999.99 };
+
+/** The Enterprise floor, per year, billed by invoice. */
+export const ENTERPRISE_FROM_ANNUAL = 5999.99;
+
+/** £1,499.99 style, always two decimals so the penny-less price is never rounded away. */
+export function formatPlanPrice(amount: number): string {
+  return `£${amount.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
 
 export const PLAN_LABELS: Record<Plan, string> = {
   trial:      "Trial",

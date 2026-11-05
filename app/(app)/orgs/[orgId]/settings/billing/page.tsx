@@ -6,7 +6,7 @@ import { Table } from "@/components/ui/table";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { ArrowUpRight, Award, Zap, FileText, Upload, Calculator, Key, Users, Building2, Check, X as XIcon } from "lucide-react";
-import { getLimits, hasFeature, PLAN_ANNUAL_TOTAL, PLAN_LABELS, PLAN_PRICES, usagePercent, type PlanFeature } from "@/lib/billing/limits";
+import { ENTERPRISE_FROM_ANNUAL, formatPlanPrice, getLimits, hasFeature, PLAN_ANNUAL_TOTAL, PLAN_LABELS, PLAN_PRICES, usagePercent, type PlanFeature } from "@/lib/billing/limits";
 import { PaymentMethodsSection } from "./payment-methods-section";
 import { SubscriptionActions } from "./subscription-actions";
 import { PilotToggle } from "./pilot-toggle";
@@ -143,11 +143,11 @@ export default function BillingPage() {
             </div>
             {PLAN_PRICES[plan].monthly > 0 && plan !== "enterprise" && (
               <p className="text-sm text-[#5B6A78] mt-0.5">
-                £{PLAN_PRICES[plan].monthly}/mo per organisation
+                {formatPlanPrice(PLAN_PRICES[plan].monthly)}/mo per organisation
               </p>
             )}
             {plan === "essentials" && (
-              <p className="text-sm text-[#5B6A78] mt-0.5">£{PLAN_ANNUAL_TOTAL.essentials}/yr per organisation</p>
+              <p className="text-sm text-[#5B6A78] mt-0.5">{formatPlanPrice(PLAN_ANNUAL_TOTAL.essentials)}/yr per organisation</p>
             )}
             {plan === "trial" && (
               <p className="text-sm text-[#5B6A78] mt-0.5">Free during trial</p>
@@ -243,7 +243,7 @@ export default function BillingPage() {
                 <td className="py-3 px-6 text-[#5B6A78]">Price</td>
                 {PLANS.map((p) => (
                   <td key={p} className="py-3 px-4 text-center text-[#41505F] tabular-nums">
-                    {p === "enterprise" ? `From £${PLAN_PRICES[p].monthly}/mo, billed annually` : p === "essentials" ? `£${PLAN_ANNUAL_TOTAL.essentials}/yr` : PLAN_PRICES[p].monthly === 0 ? "Free" : `£${PLAN_PRICES[p].monthly}/mo`}
+                    {p === "enterprise" ? `From ${formatPlanPrice(ENTERPRISE_FROM_ANNUAL)}/yr, billed annually` : p === "essentials" ? `${formatPlanPrice(PLAN_ANNUAL_TOTAL.essentials)}/yr` : PLAN_PRICES[p].monthly === 0 ? "Free" : `${formatPlanPrice(PLAN_PRICES[p].monthly)}/mo`}
                   </td>
                 ))}
               </tr>

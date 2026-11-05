@@ -2,19 +2,21 @@ import { GuideLinks } from "@/components/marketing/guide-links";
 import type { Metadata } from "next";
 import { withSocial } from "@/lib/seo/page-meta";
 import { Check, Minus } from "lucide-react";
-import { PLAN_ANNUAL_TOTAL, PLAN_PRICES } from "@/lib/billing/limits";
+import { ENTERPRISE_FROM_ANNUAL, formatPlanPrice, PLAN_ANNUAL_TOTAL, PLAN_PRICES } from "@/lib/billing/limits";
+import { PlanArt, type PlanArtKind } from "@/components/marketing/plan-art";
 import { ButtonLink, ClosingCta, Eyebrow, H1, H3, Lead, Section, SectionIntro, reveal } from "@/components/marketing/kit";
 import { cn } from "@/lib/utils";
 import { StripeNote } from "@/components/marketing/brand-marks";
 
 export const metadata: Metadata = withSocial({
   title: "Carbon reporting software pricing",
-  description: "Priced per organisation. Essentials £199 a year for a PPN 006 Carbon Reduction Plan, Starter £99 a month, Growth £299, Enterprise from £750.",
+  description: `Priced per organisation. Essentials ${formatPlanPrice(PLAN_ANNUAL_TOTAL.essentials)} a year for a PPN 006 Carbon Reduction Plan, Starter ${formatPlanPrice(PLAN_PRICES.starter.monthly)} a month, Growth ${formatPlanPrice(PLAN_PRICES.growth.monthly)}, Enterprise from ${formatPlanPrice(ENTERPRISE_FROM_ANNUAL)} a year.`,
   alternates: { canonical: "/pricing" },
 });
 
 type Tier = {
   name: string;
+  art: PlanArtKind;
   price: string;
   period: string;
   note: string;
@@ -22,13 +24,15 @@ type Tier = {
   cta: { href: string; label: string };
   features: { name: string; included: boolean }[];
   highlight?: boolean;
+  dark?: boolean;
 };
 
 // Features follow PLAN_FEATURES and limits follow PLAN_LIMITS in lib/billing/limits.ts.
 const TIERS: Tier[] = [
   {
     name: "Essentials",
-    price: `£${PLAN_ANNUAL_TOTAL.essentials}`,
+    art: "essentials",
+    price: formatPlanPrice(PLAN_ANNUAL_TOTAL.essentials),
     period: "per year",
     note: "Billed yearly",
     forWho: "For an SME that needs a PPN 006 Carbon Reduction Plan for a tender.",
@@ -46,9 +50,10 @@ const TIERS: Tier[] = [
   },
   {
     name: "Starter",
-    price: `£${PLAN_PRICES.starter.monthly}`,
+    art: "starter",
+    price: formatPlanPrice(PLAN_PRICES.starter.monthly),
     period: "per month",
-    note: `or £${PLAN_ANNUAL_TOTAL.starter.toLocaleString("en-GB")} a year, two months free`,
+    note: `or ${formatPlanPrice(PLAN_ANNUAL_TOTAL.starter)} a year, about two months free`,
     forWho: "For one business reporting SECR and answering tender questions.",
     cta: { href: "/sign-up", label: "Start a 30-day trial" },
     features: [
@@ -66,9 +71,10 @@ const TIERS: Tier[] = [
   },
   {
     name: "Growth",
-    price: `£${PLAN_PRICES.growth.monthly}`,
+    art: "growth",
+    price: formatPlanPrice(PLAN_PRICES.growth.monthly),
     period: "per month",
-    note: `or £${PLAN_ANNUAL_TOTAL.growth.toLocaleString("en-GB")} a year, two months free`,
+    note: `or ${formatPlanPrice(PLAN_ANNUAL_TOTAL.growth)} a year, about two months free`,
     forWho: "For contractors bidding for public work and managing several sites.",
     cta: { href: "/sign-up", label: "Start a 30-day trial" },
     highlight: true,
@@ -85,8 +91,10 @@ const TIERS: Tier[] = [
   },
   {
     name: "Enterprise",
-    price: `£${PLAN_PRICES.enterprise.monthly}`,
-    period: "per month",
+    art: "enterprise",
+    dark: true,
+    price: formatPlanPrice(ENTERPRISE_FROM_ANNUAL),
+    period: "per year",
     note: "From this, billed annually by invoice",
     forWho: "For groups with many sites, entities and IT requirements.",
     cta: { href: "/contact", label: "Talk to us" },
@@ -181,32 +189,42 @@ export default function PricingPage() {
               key={t.name}
               {...reveal(i, "self", 4)}
               className={cn(
-                "flex flex-col gap-6 rounded-[12px] border bg-mk-surface p-7",
-                t.highlight ? "border-mk-accent shadow-[0_24px_48px_-24px_rgba(194,65,12,0.35)]" : "border-mk-line",
+                "group relative isolate flex flex-col gap-6 overflow-hidden rounded-[12px] border p-7 transition-[transform,box-shadow] duration-300 motion-safe:hover:-translate-y-1",
+                t.dark
+                  ? "border-mk-line-dark bg-mk-ink text-mk-on-dark hover:shadow-[0_24px_48px_-24px_rgba(19,29,41,0.55)]"
+                  : "bg-mk-surface hover:shadow-[0_24px_48px_-28px_rgba(19,29,41,0.3)]",
+                !t.dark && (t.highlight ? "border-mk-accent shadow-[0_24px_48px_-24px_rgba(194,65,12,0.35)]" : "border-mk-line"),
               )}
             >
+              {t.highlight ? (
+                <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(120%_60%_at_80%_0%,var(--color-mk-accent-soft),transparent_70%)]" />
+              ) : null}
+              <PlanArt kind={t.art} tone={t.dark ? "dark" : "light"} className="-z-10" />
               <div className="flex items-center justify-between">
                 <H3 className="text-[20px]">{t.name}</H3>
                 {t.highlight ? (
                   <span className="rounded-full bg-mk-accent-soft px-2.5 py-1 font-sans text-[12px] text-mk-accent-hover">Most chosen</span>
                 ) : null}
               </div>
-              <p className="text-[15px] text-mk-text-2">{t.forWho}</p>
+              <p className={cn("text-[15px]", t.dark ? "text-mk-on-dark-2" : "text-mk-text-2")}>{t.forWho}</p>
               <div>
                 <p className="flex items-baseline gap-2">
-                  <span className="text-[40px] font-medium tracking-[-0.03em] tabular-nums">{t.price}</span>
-                  <span className="text-[15px] text-mk-text-3">{t.period}</span>
+                  <span className="text-[34px] font-medium tracking-[-0.03em] tabular-nums">{t.price}</span>
+                  <span className={cn("text-[15px]", t.dark ? "text-mk-on-dark-3" : "text-mk-text-3")}>{t.period}</span>
                 </p>
-                <p className="text-[13px] tabular-nums text-mk-text-3">{t.note}</p>
+                <p className={cn("text-[13px] tabular-nums", t.dark ? "text-mk-on-dark-3" : "text-mk-text-3")}>{t.note}</p>
               </div>
-              <ButtonLink href={t.cta.href} variant={t.highlight ? "primary" : "secondary"}>
+              <ButtonLink href={t.cta.href} variant={t.highlight ? "primary" : "secondary"} tone={t.dark ? "dark" : "light"}>
                 {t.cta.label}
               </ButtonLink>
-              <ul className="grid gap-3 border-t border-mk-line pt-6">
+              <ul className={cn("grid gap-3 border-t pt-6", t.dark ? "border-mk-line-dark" : "border-mk-line")}>
                 {t.features.map((f) => (
-                  <li key={f.name} className={cn("flex gap-3 text-[14px] leading-snug", f.included ? "text-mk-text-2" : "text-mk-text-3")}>
+                  <li
+                    key={f.name}
+                    className={cn("flex gap-3 text-[14px] leading-snug", f.included ? (t.dark ? "text-mk-on-dark-2" : "text-mk-text-2") : t.dark ? "text-mk-on-dark-3" : "text-mk-text-3")}
+                  >
                     {f.included ? (
-                      <Check aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-mk-accent" />
+                      <Check aria-hidden="true" className={cn("mt-0.5 h-4 w-4 shrink-0", t.dark ? "text-mk-accent-lit" : "text-mk-accent")} />
                     ) : (
                       <Minus aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
                     )}

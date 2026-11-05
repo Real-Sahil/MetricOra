@@ -23,9 +23,11 @@ Recommendation: keep the flat per-organisation model and add one new limit, the 
 
 ## 2. Tier design
 
+Prices set 2026-11-05 at percentiles of a nine-point competitor sample (Starter near the 25th, Growth near the median, the Enterprise floor near the 75th), each one penny under a round figure; Essentials is £199.99 a year. The sample is vendor and aggregator claims, so re-run it with real quotes after the discovery calls. Earlier figures in this file (£99, £299, £750) are superseded.
+
 30-day trial with Growth features and 3 frameworks. Annual discount on every tier: 2 months free (17%).
 
-### Starter: £99/month or £990/year
+### Starter: £149.99/month or £1,499.99/year
 - 3 sites, 5 web users, unlimited field workers
 - Scope 1, 2 and 3; SECR and PPN 006 Carbon Reduction Plan
 - 10 reports and 500 field submissions a month
@@ -34,7 +36,7 @@ Recommendation: keep the flat per-organisation model and add one new limit, the 
 
 Upgrade trigger: a second standard. A contractor with ISO 14001 is asked for ISO 45001 at the next PQQ, because the Common Assessment Standard checks health and safety first.
 
-### Growth: £299/month or £2,990/year (target tier)
+### Growth: £299.99/month or £2,999.99/year (target tier)
 - 15 sites, 25 web users
 - Social value, bid carbon pack, PAS 2080, accounting sync
 - **5 frameworks**: ISO 9001, 14001 and 45001 as one integrated system, plus two more (UK GDPR, Cyber Essentials or ISO 27001)
@@ -42,7 +44,7 @@ Upgrade trigger: a second standard. A contractor with ISO 14001 is asked for ISO
 
 Upgrade trigger: more than 15 contracts, SSO, or a sixth framework (a group running SOC 2 or NIS2 for a client).
 
-### Enterprise: from £750/month, billed annually, sales-led
+### Enterprise: from £5,999.99/year, billed annually, sales-led
 - Unlimited sites, users and frameworks
 - SSO, invoice anomaly detection, live dashboard, named contact
 
@@ -73,7 +75,7 @@ Break-even on Estimate: £400/month tooling: 6 Starter, 2 Growth or 1 Enterprise
 
 - Anchor: Enterprise first on the page, so Growth reads as the middle.
 - Decoy: Starter's single framework. A firm holding ISO 14001 and ISO 45001 cannot run both on Starter, and moving to Growth also brings social value and the bid pack, so the jump feels like three upgrades for one.
-- Annual framing: "£249/month, billed £2,990 yearly, 2 months free", next to "5 ISO and privacy frameworks included".
+- Annual framing: "£249.99/month, billed £2,999.99 yearly, about 2 months free", next to "5 ISO and privacy frameworks included".
 
 ## 6. Launch pricing vs. scale pricing
 

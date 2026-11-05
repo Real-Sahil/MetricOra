@@ -2,7 +2,7 @@
 
 # MetricOra competitor matrix
 
-Assumption: MetricOra's prices are those in the code and on the pricing page today: Starter £99/mo (£990/yr), Growth £299/mo (£2,990/yr), Enterprise from £750/mo. This replaces the older £49/£149 figures in facts.md.
+Assumption: MetricOra's prices are those in the code and on the pricing page today: Starter £149.99/mo (£1,499.99/yr), Growth £299.99/mo (£2,999.99/yr), Enterprise from £5,999.99/yr (repriced 2026-11-05). This replaces the older £49/£149 figures in facts.md.
 Assumption: target customers are UK SME construction and FM contractors, bought by sustainability and bid managers (facts.md).
 
 ## 1. Market landscape
@@ -59,7 +59,7 @@ Sources as above. "Unknown" means search results did not confirm it either way.
 
 1. **Qflow: high.** Most funding in the niche (about £11.6M, plus Autodesk's £2M). Its field capture overlaps MetricOra's core, and it is backed by Autodesk Construction Cloud. It shipped a new strategic deal in February 2026 and is expanding to North America ([Autodesk](https://adsknews.autodesk.com/en/news/autodesk-invests-in-qflow/)). Release history was not found.
 2. **Seedling: medium.** Small funding, but strong content ranking for PPN 006 and SME carbon searches, and a service model buyers trust. Low feature overlap on field capture.
-3. **Sustainable Contractor: medium.** Same buyer and price point (from £995/yr against MetricOra Starter at £990/yr), PPN 006 and SECR in a simple product. Funding and release pace Not found.
+3. **Sustainable Contractor: medium.** Same buyer and price point (from £995/yr against MetricOra Starter at £1,499.99/yr), PPN 006 and SECR in a simple product. Funding and release pace Not found.
 
 Social Value Portal is low on carbon threat but controls the TOMs relationship with buyers.
 

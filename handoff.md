@@ -71,4 +71,4 @@ Long chats cost tokens because every call re-reads the whole context. A fresh se
 
 ## 6. Settled decisions
 
-Detail in `docs/dev/features/decisions.md`. Short form: Supabase Postgres and Storage; per-organisation billing (Starter £99, Growth £299, Enterprise from £750 a month; 30-day trial; Essentials £199 a year); GHG Protocol report is the default; methodology bumps only for rule changes that alter a figure; factor loading is manual, CPI by pull request; group model is one organisation per reporting group.
+Detail in `docs/dev/features/decisions.md`. Short form: Supabase Postgres and Storage; per-organisation billing (Starter £149.99 a month, Growth £299.99, Enterprise from £5,999.99 a year, each penny under a round figure and set at market percentiles; 30-day trial; Essentials £199.99 a year); GHG Protocol report is the default; methodology bumps only for rule changes that alter a figure; factor loading is manual, CPI by pull request; group model is one organisation per reporting group.

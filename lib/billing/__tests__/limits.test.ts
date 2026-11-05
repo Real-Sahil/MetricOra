@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getLimits, hasFeature, usagePercent, PLAN_ANNUAL_TOTAL, PLAN_PRICES, PLAN_LABELS } from "@/lib/billing/limits";
+import { getLimits, hasFeature, usagePercent, PLAN_ANNUAL_TOTAL, PLAN_PRICES, PLAN_LABELS, ENTERPRISE_FROM_ANNUAL, formatPlanPrice } from "@/lib/billing/limits";
 
 describe("getLimits", () => {
   it("returns trial limits for unknown plan", () => {
@@ -75,13 +75,29 @@ describe("PLAN_PRICES", () => {
     expect(PLAN_PRICES.growth.annual).toBeLessThan(PLAN_PRICES.growth.monthly);
   });
 
-  it("enterprise starts at £750/month, billed annually", () => {
-    expect(PLAN_PRICES.enterprise.monthly).toBe(750);
+  it("enterprise starts at £5,999.99 a year, billed annually", () => {
+    expect(ENTERPRISE_FROM_ANNUAL).toBe(5999.99);
+    expect(PLAN_PRICES.enterprise.monthly).toBe(Math.floor((ENTERPRISE_FROM_ANNUAL / 12) * 100) / 100);
   });
 
-  it("annual prices are two months free", () => {
-    expect(PLAN_ANNUAL_TOTAL.starter).toBe(PLAN_PRICES.starter.monthly * 10);
-    expect(PLAN_ANNUAL_TOTAL.growth).toBe(PLAN_PRICES.growth.monthly * 10);
+  it("annual prices save about two months against paying monthly", () => {
+    for (const p of ["starter", "growth"] as const) {
+      const saved = PLAN_PRICES[p].monthly * 12 - PLAN_ANNUAL_TOTAL[p];
+      expect(saved).toBeGreaterThan(PLAN_PRICES[p].monthly * 1.9);
+      expect(saved).toBeLessThan(PLAN_PRICES[p].monthly * 2.1);
+    }
+  });
+
+  it("every price is one penny under a round figure", () => {
+    const pennies = (n: number) => Math.round(n * 100) % 100;
+    for (const n of [...Object.values(PLAN_ANNUAL_TOTAL), ENTERPRISE_FROM_ANNUAL, PLAN_PRICES.starter.monthly, PLAN_PRICES.growth.monthly]) {
+      expect(pennies(n)).toBe(99);
+    }
+  });
+
+  it("formatPlanPrice keeps both decimals", () => {
+    expect(formatPlanPrice(1499.99)).toBe("£1,499.99");
+    expect(formatPlanPrice(199.99)).toBe("£199.99");
   });
 });
 
