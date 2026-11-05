@@ -2,7 +2,7 @@ import { GuideLinks } from "@/components/marketing/guide-links";
 import type { Metadata } from "next";
 import { withSocial } from "@/lib/seo/page-meta";
 import { Check, Minus } from "lucide-react";
-import { ENTERPRISE_FROM_ANNUAL, formatPlanPrice, PLAN_ANNUAL_TOTAL, PLAN_PRICES } from "@/lib/billing/limits";
+import { ENTERPRISE_FROM_ANNUAL, formatPlanPrice, getLimits, PLAN_ANNUAL_TOTAL, PLAN_PRICES } from "@/lib/billing/limits";
 import { PlanArt, type PlanArtKind } from "@/components/marketing/plan-art";
 import { ButtonLink, ClosingCta, Eyebrow, H1, H3, Lead, Section, SectionIntro, reveal } from "@/components/marketing/kit";
 import { cn } from "@/lib/utils";
@@ -27,6 +27,12 @@ type Tier = {
   dark?: boolean;
 };
 
+/** The monthly allowance line, read from PLAN_LIMITS so the page cannot drift from what is enforced. */
+function allowance(plan: "essentials" | "starter" | "growth"): string {
+  const l = getLimits(plan);
+  return `${l.fieldSubmissionsPerMonth.toLocaleString("en-GB")} field submissions and ${l.reportsPerMonth} generated reports a month`;
+}
+
 // Features follow PLAN_FEATURES and limits follow PLAN_LIMITS in lib/billing/limits.ts.
 const TIERS: Tier[] = [
   {
@@ -43,6 +49,7 @@ const TIERS: Tier[] = [
       { name: "Scope 1, 2 and 3 with DEFRA, EPA, ADEME and spend factors", included: true },
       { name: "Guided PPN 006 Carbon Reduction Plan, checked before it is generated", included: true },
       { name: "GHG Protocol report with the auditor's CSV calculation trail", included: true },
+      { name: allowance("essentials"), included: true },
       { name: "Email support", included: true },
       { name: "SECR and the other report types", included: false },
       { name: "Management systems (ISO 14001, 45001, 9001)", included: false },
@@ -63,6 +70,7 @@ const TIERS: Tier[] = [
       { name: "Guided PPN 006 Carbon Reduction Plan and SECR report", included: true },
       { name: "Emissions reports with the auditor's CSV calculation trail", included: true },
       { name: "One management system framework, such as ISO 14001, with shared registers", included: true },
+      { name: allowance("starter"), included: true },
       { name: "Email support", included: true },
       { name: "Social value (TOMs) tracking", included: false },
       { name: "Bid carbon pack and PAS 2080", included: false },
@@ -82,6 +90,7 @@ const TIERS: Tier[] = [
       { name: "Up to 15 sites or contracts and 25 web users", included: true },
       { name: "Unlimited field workers and supplier logins", included: true },
       { name: "Everything in Starter", included: true },
+      { name: allowance("growth"), included: true },
       { name: "Social value (TOMs) tracking", included: true },
       { name: "Bid carbon pack, PAS 2080 and project carbon budgets", included: true },
       { name: "Xero sync", included: true },
@@ -101,6 +110,7 @@ const TIERS: Tier[] = [
     features: [
       { name: "Unlimited sites, entities and users", included: true },
       { name: "Everything in Growth", included: true },
+      { name: "No monthly caps on field submissions or generated reports", included: true },
       { name: "Every management system framework in the catalogue", included: true },
       { name: "Single sign-on (SAML or OpenID Connect)", included: true },
       { name: "Invoice anomaly detection", included: true },
@@ -130,6 +140,10 @@ const FAQ = [
   {
     q: "What counts as a management system framework?",
     a: "Each standard or law you adopt in Management systems, such as ISO 14001, ISO 45001, ISO 27001 or UK GDPR. Essentials includes none, Starter one, Growth five and Enterprise all of them; the trial includes three. The registers for risks, policies, audits, corrective actions and management reviews are shared by every framework and are not counted. A framework you withdraw stops counting and keeps its history.",
+  },
+  {
+    q: "Are there monthly limits?",
+    a: "Field workers are never counted, but each plan has a monthly allowance of field submissions and generated reports, shown on the plan. Enterprise has none. If you reach an allowance the app stops that action and says why; moving up a plan raises it.",
   },
   {
     q: "Can I change plan or cancel?",
