@@ -97,7 +97,7 @@ export function Eyebrow({ children, tone = "light" }: { children: ReactNode; ton
   return (
     <p
       className={cn(
-        "font-sans text-[12px] font-medium uppercase tracking-[0.12em]",
+        "font-sans text-[13px] font-medium",
         tone === "dark" ? "text-mk-accent-lit" : "text-mk-accent",
       )}
     >

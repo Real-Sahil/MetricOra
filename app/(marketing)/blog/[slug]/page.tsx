@@ -83,7 +83,7 @@ export default async function BlogPostPage({ params }: Props) {
           <Eyebrow tone="dark">{post.tags[0] ?? "Article"}</Eyebrow>
           <h1 className="text-[36px] leading-[1.1] tracking-[-0.03em] text-balance sm:text-[48px]">{post.title}</h1>
           <p className="max-w-[62ch] text-[18px] leading-relaxed text-mk-on-dark-2">{post.excerpt}</p>
-          <p className="font-sans text-[12px] uppercase tracking-[0.1em] text-mk-on-dark-3">
+          <p className="font-sans text-[13px] text-mk-on-dark-3">
             <time dateTime={post.date}>{formatDate(new Date(post.date))}</time> · {post.readingTime} min read · {post.author}
           </p>
         </div>

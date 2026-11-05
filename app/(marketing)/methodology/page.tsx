@@ -88,7 +88,7 @@ export default function MethodologyPage() {
         <div className="mt-10 overflow-x-auto rounded-[12px] border border-mk-line">
           <table className="w-full min-w-[640px] text-left text-[15px]">
             <thead>
-              <tr className="border-b border-mk-line bg-mk-paper font-sans text-[12px] uppercase tracking-[0.1em] text-mk-text-3">
+              <tr className="border-b border-mk-line bg-mk-paper font-sans text-[13px] text-mk-text-3">
                 <th className="px-5 py-3 font-medium">Library</th>
                 <th className="px-5 py-3 font-medium">Covers</th>
                 <th className="px-5 py-3 font-medium">Licence</th>

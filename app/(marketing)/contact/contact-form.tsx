@@ -61,7 +61,7 @@ export function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
-          <label htmlFor="name" className="block text-[13px] font-medium text-mk-text-2 mb-1.5 tracking-wide">
+          <label htmlFor="name" className="block text-[13px] font-medium text-mk-text-2 mb-1.5">
             Full name
           </label>
           <input
@@ -76,7 +76,7 @@ export function ContactForm() {
           />
         </div>
         <div>
-          <label htmlFor="email" className="block text-[13px] font-medium text-mk-text-2 mb-1.5 tracking-wide">
+          <label htmlFor="email" className="block text-[13px] font-medium text-mk-text-2 mb-1.5">
             Work email
           </label>
           <input
@@ -93,7 +93,7 @@ export function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="company" className="block text-[13px] font-medium text-mk-text-2 mb-1.5 tracking-wide">
+        <label htmlFor="company" className="block text-[13px] font-medium text-mk-text-2 mb-1.5">
           Company
         </label>
         <input
@@ -109,7 +109,7 @@ export function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="message" className="block text-[13px] font-medium text-mk-text-2 mb-1.5 tracking-wide">
+        <label htmlFor="message" className="block text-[13px] font-medium text-mk-text-2 mb-1.5">
           Tell us about your pilot
         </label>
         <textarea
