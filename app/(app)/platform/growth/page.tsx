@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { requirePlatformMember, AuthError } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
 import { ACTIVATION_REPORT_TYPES, growthMetrics } from "@/lib/platform/growth";
+import { summariseUsage, usageDay } from "@/lib/usage/module-usage";
+import { usageAreaLabel } from "@/lib/nav/modules";
 import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -25,6 +27,7 @@ export default async function PlatformGrowthPage() {
     throw err;
   }
 
+  const now = new Date();
   const orgs = await prisma.organization.findMany({
     select: {
       createdAt: true,
@@ -44,8 +47,17 @@ export default async function PlatformGrowthPage() {
       isPilot: o.isPilot,
       activationReports: o._count.reports,
     })),
-    new Date(),
+    now,
   );
+
+  // A deploy that lands before its migration has no usage table yet: show the section empty rather than fail.
+  const usageRows = await prisma.moduleUsageDay
+    .findMany({
+      where: { day: { gte: new Date(usageDay(now).getTime() - 89 * 86_400_000) } },
+      select: { organizationId: true, area: true, day: true, visits: true },
+    })
+    .catch(() => []);
+  const usage = summariseUsage(usageRows, now);
 
   const stat = (label: string, value: string, note?: string) => (
     <Card className="p-[21px]">
@@ -138,6 +150,39 @@ export default async function PlatformGrowthPage() {
                   </TableCell>
                 </TableRow>
               ) : null}
+            </TableBody>
+          </Table>
+        </Card>
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="text-sm font-semibold text-[#131d29]">Areas opened, last 30 and 90 days</h2>
+        <p className="text-sm text-[#41505F] max-w-[65ch]">
+          Organisations that opened each area, and visits counted once per browser tab, area and day. Every
+          optional module is listed, so one nobody opens shows as zero. Counting started on 5 November 2026; platform
+          staff opening an organisation they belong to are counted too.
+        </p>
+        <Card className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Area</TableHead>
+                <TableHead className="text-right">Organisations, 30 days</TableHead>
+                <TableHead className="text-right">Visits, 30 days</TableHead>
+                <TableHead className="text-right">Organisations, 90 days</TableHead>
+                <TableHead className="text-right">Visits, 90 days</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {usage.map((u) => (
+                <TableRow key={u.area}>
+                  <TableCell className="text-sm text-[#131d29]">{usageAreaLabel(u.area)}</TableCell>
+                  <TableCell className="text-right tabular-nums">{u.orgs30}</TableCell>
+                  <TableCell className="text-right tabular-nums">{u.visits30}</TableCell>
+                  <TableCell className="text-right tabular-nums">{u.orgs90}</TableCell>
+                  <TableCell className="text-right tabular-nums">{u.visits90}</TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </Card>

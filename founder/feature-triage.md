@@ -213,6 +213,6 @@ None of these deletes a feature.
 ## When to revisit
 
 - **After 20 discovery calls:** settle the management systems question (finding 4).
-- **At 5 design partners:** move anything two of them use from Second wave into Core.
+- **At 5 design partners:** move anything two of them use from Second wave into Core. Platform, Growth, "Areas opened" counts the organisations that opened each area in the last 30 and 90 days (counting from 5 November 2026), so "use" can be read there rather than asked.
 - **At 10 paying customers:** review the pricing tiers and unpark anything a customer has asked for twice.
 - **Every quarter:** recheck the regulatory calendar and the CPI table, whatever the module state.

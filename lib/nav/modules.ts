@@ -45,3 +45,18 @@ export function inMenu(state: MenuState, path: string): boolean {
   if (state.trialMenu) return inTrialMenu(path);
   return true;
 }
+
+/** The usage bucket of a page (below /orgs/{orgId}/): `core:<area>` for a Core area, the module key for a module's page, null for a page neither claims. */
+export function usageAreaOf(path: string): string | null {
+  const clean = path.replace(/^\/+/, "").replace(/[?#].*$/, "");
+  if (clean === "") return null;
+  const core = CORE_AREAS.find((a) => within(clean, a));
+  if (core) return `core:${core}`;
+  return MODULES.find((m) => m.areas.some((a) => within(clean, a)))?.key ?? null;
+}
+
+/** A label for a usage bucket from usageAreaOf(). */
+export function usageAreaLabel(area: string): string {
+  if (area.startsWith("core:")) return `Core: ${area.slice(5).replace(/-/g, " ")}`;
+  return MODULES.find((m) => m.key === area)?.label ?? area;
+}

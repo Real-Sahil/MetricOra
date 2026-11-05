@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cleanModuleKeys, inFocus, inMenu, MODULES } from "../modules";
+import { cleanModuleKeys, inFocus, inMenu, MODULES, usageAreaLabel, usageAreaOf } from "../modules";
 
 describe("focus modules", () => {
   it("keeps Core areas on whatever is chosen", () => {
@@ -34,5 +34,15 @@ describe("focus modules", () => {
     expect(inMenu({ focus: ["bids"] }, "compliance/crosswalk")).toBe(false);
     expect(inMenu({ trialMenu: true }, "social-value")).toBe(true);
     expect(inMenu({ trialMenu: true }, "compliance/crosswalk")).toBe(false);
+  });
+  it("puts each page in one usage bucket: a Core area, a module, or none", () => {
+    expect(usageAreaOf("waste/documents")).toBe("core:waste");
+    expect(usageAreaOf("/settings/modules?x=1")).toBe("core:settings");
+    expect(usageAreaOf("plant")).toBe("site-ops");
+    expect(usageAreaOf("compliance/crosswalk")).toBe("disclosure");
+    expect(usageAreaOf("")).toBeNull();
+    expect(usageAreaOf("not-a-module")).toBeNull();
+    expect(usageAreaLabel("core:base-year")).toBe("Core: base year");
+    expect(usageAreaLabel("site-ops")).toBe("Site operations");
   });
 });

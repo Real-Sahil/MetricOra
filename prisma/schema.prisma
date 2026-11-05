@@ -197,6 +197,7 @@ model Verification {
 model Organization {
   reportLayouts ReportLayout[]
   perfSamples   PerfSample[]
+  moduleUsageDays ModuleUsageDay[]
   submissionLinks              SubmissionLink[]
   id                           String                @id @default(cuid())
   name                         String
@@ -8506,4 +8507,19 @@ model PerfSample {
   @@index([page, createdAt])
   @@index([organizationId, createdAt])
   @@map("perf_samples")
+}
+
+/// Page visits per organisation, area and UTC day, for the platform Growth page. An area is a module key or
+/// `core:<area>` (usageAreaOf() in lib/nav/modules.ts). No user, path or record is stored.
+model ModuleUsageDay {
+  organizationId String   @map("organization_id")
+  area           String
+  day            DateTime @db.Date
+  visits         Int      @default(0)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@id([organizationId, area, day])
+  @@index([day])
+  @@map("module_usage_days")
 }

@@ -20,6 +20,7 @@ import { headers } from "next/headers";
 import { getSelectedProject } from "@/lib/project/selected";
 import { brandingCss, brandingVars } from "@/lib/branding/css-vars";
 import { EarthyTabBar } from "@/components/earthy/tab-bar";
+import { ModuleUsageBeacon } from "@/components/org/module-usage-beacon";
 
 interface OrgLayoutProps {
   children: React.ReactNode;
@@ -194,6 +195,7 @@ export default async function OrgLayout({ children, params }: OrgLayoutProps) {
       {cssVars && <style>{cssVars}</style>}
       <AppearanceSync saved={themePreference} />
       <OrgSidebar orgId={orgId} orgName={org.name} user={user} role={membership!.role} projects={projects} selectedProjectId={selectedProject?.id ?? null} themePreference={themePreference} trialMenu={trialMenu} focus={focus} />
+      <ModuleUsageBeacon orgId={orgId} />
       <CommandPalette orgId={orgId} role={membership!.role} canUseViews={viewRoles().includes(membership!.role)} trialMenu={trialMenu} focus={focus} />
       {/* The column wraps the top bar and main so the bar sticks to the viewport, not to main (which never scrolls on its own). */}
       <div className="flex flex-1 min-w-0 flex-col">
