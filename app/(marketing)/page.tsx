@@ -48,7 +48,7 @@ const AREAS = [
   { href: "/product#evidence", title: "Evidence capture", text: "Field app, imports and a review queue, with OCR results checked against what was submitted." },
   { href: "/product#carbon", title: "Carbon accounting", text: "Scope 1, 2 and 3 against DEFRA, EPA, ADEME and spend factors, with location- and market-based Scope 2." },
   { href: "/product#reporting", title: "Reporting and assurance", text: "Versioned snapshots, reports with a verification code, a hash-chained audit trail and a readiness score." },
-  { href: "/product#compliance", title: "Compliance", text: "One dataset mapped to SECR, ESRS E1, GHG Protocol, GRI 305, IFRS S2 and CDP, with a regulatory calendar." },
+  { href: "/product#compliance", title: "Compliance", text: "One dataset behind SECR, PPN 006 Carbon Reduction Plans and GHG Protocol reporting, with a regulatory calendar." },
   { href: "/product#planning", title: "Targets and planning", text: "Base year and recalculation policy, pathway, transition plan checklist and an internal carbon price." },
   { href: "/product#operations", title: "Supply chain and site operations", text: "Supplier data requests, social value, embodied carbon, plant, waste, water and environmental registers." },
 ];
@@ -344,12 +344,12 @@ export default function HomePage() {
             <SectionIntro
               eyebrow="Compliance"
               tone="dark"
-              title="Answer each framework from the same numbers."
-              lead="The crosswalk shows which disclosure points your data already satisfies, which are partly there and which need a person to write something."
+              title="Answer each requirement from the same numbers."
+              lead="The checks show which points your data already covers, which are partly there and which need a person to write something."
             />
             <CheckList
               tone="dark"
-              items={["SECR, ESRS E1, GHG Protocol, GRI 305, IFRS S2 and CDP", "ESRS E1 gap analysis with the next action for each point", "A regulatory calendar with the deadlines that apply to you"]}
+              items={["SECR, PPN 006 Carbon Reduction Plans and GHG Protocol", "A gap list with the next action for each point", "A regulatory calendar with the deadlines that apply to you"]}
             />
             <TextLink href="/product#compliance" tone="dark">
               See compliance features
@@ -365,7 +365,7 @@ export default function HomePage() {
       </Section>
 
       <Section tone="light">
-        <SectionIntro eyebrow="Who it is for" title="Built around how UK contractors work." />
+        <SectionIntro eyebrow="Who it is for" title="Built first for UK main contractors." />
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {AUDIENCES.map((a, i) => (
             <Link key={a.href} href={a.href} {...reveal(i)} className="group flex flex-col gap-3 rounded-[12px] border border-mk-line p-7 transition-colors hover:border-mk-text/30">
