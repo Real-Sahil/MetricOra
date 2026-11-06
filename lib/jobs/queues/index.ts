@@ -31,6 +31,7 @@ export type NotificationJobData = {
     | "ms_reminder"
     | "monthly_checklist"
     | "waste_document_expiry"
+    | "crp_renewal"
     | "payment_failed";
   recipientUserId: string;
   orgId: string;

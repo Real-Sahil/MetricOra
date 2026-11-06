@@ -391,6 +391,15 @@ export async function processNotification(data: NotificationJobData): Promise<vo
       });
     })
 
+    .with({ type: "crp_renewal" }, async (d) => {
+      const overdue = d.metadata?.stage === "overdue";
+      await sendPushToUser(d.recipientUserId, {
+        title: overdue ? "Carbon Reduction Plan due for update" : "Carbon Reduction Plan update coming up",
+        body: `Your signed plan ${overdue ? "was due for its annual update on" : "is due for its annual update on"} ${(d.metadata?.dueOn as string) ?? "its anniversary"}.`,
+        data: { type: "crp_renewal", orgId: d.orgId },
+      });
+    })
+
     .with({ type: "payment_failed" }, async (d) => {
       await sendPushToUser(d.recipientUserId, {
         title: "MetricOra payment failed",

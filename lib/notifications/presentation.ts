@@ -179,6 +179,19 @@ export function notificationPresentation(data: NotificationJobData): Notificatio
         link: `${orgBase}/waste/documents`,
       };
     }
+    case "crp_renewal": {
+      const overdue = data.metadata?.stage === "overdue";
+      const dueOn = str(data.metadata?.dueOn, "");
+      const signed = str(data.metadata?.signedDate, "");
+      const period = str(data.metadata?.periodLabel, "");
+      return {
+        title: overdue ? "Carbon Reduction Plan due for its annual update" : `Carbon Reduction Plan update due on ${dueOn}`,
+        body: `PPN 006 asks for the plan to be updated at least annually. Your latest signed plan${period ? ` (${period})` : ""} was signed on ${signed}${
+          overdue ? `, so its update was due on ${dueOn}.` : `. Start next year's plan from it before ${dueOn}.`
+        }`,
+        link: `${orgBase}/carbon-reduction-plan`,
+      };
+    }
     case "monthly_checklist": {
       const count = num(data.metadata?.count, 0);
       const label = str(data.metadata?.monthLabel, "last month");

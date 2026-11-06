@@ -26,6 +26,7 @@ export const EXPECTED_INTERVAL_MS: Record<string, number> = {
   "management-systems": DAILY,
   "audit-anchor": DAILY,
   "subcontractor-reminders": DAILY,
+  "crp-renewal": DAILY,
   "waste-documents": WEEKLY,
   "audit-anonymise": MONTHLY,
   "monthly-checklist": MONTHLY,

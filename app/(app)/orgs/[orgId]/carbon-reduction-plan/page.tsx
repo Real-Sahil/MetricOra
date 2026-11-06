@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { AuthError, requireOrgMember, ROLE_GROUPS } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
 import { previousFiscalYear, fiscalYearOf } from "@/lib/i18n/fiscal-year";
+import { formatters, orgFormat } from "@/lib/i18n/org-format";
+import { loadCrpRenewal } from "@/lib/crp/renewal";
 import { StartPlanForm } from "./start-plan-form";
 
 type Props = { params: Promise<{ orgId: string }> };
@@ -26,7 +28,7 @@ export default async function CarbonReductionPlansPage({ params }: Props) {
     return <div className="p-8 text-sm text-red-600">Access denied.</div>;
   }
 
-  const [plans, periods, org] = await Promise.all([
+  const [plans, periods, org, renewal] = await Promise.all([
     prisma.carbonReductionPlan.findMany({
       where: { organizationId: orgId },
       orderBy: { updatedAt: "desc" },
@@ -37,8 +39,11 @@ export default async function CarbonReductionPlansPage({ params }: Props) {
       orderBy: { startDate: "desc" },
       select: { id: true, label: true },
     }),
-    prisma.organization.findUnique({ where: { id: orgId }, select: { fiscalYearStartMonth: true } }),
+    prisma.organization.findUnique({ where: { id: orgId }, select: { fiscalYearStartMonth: true, hqCountry: true, reportingCurrency: true } }),
+    loadCrpRenewal(orgId),
   ]);
+  const f = formatters(orgFormat(org ?? {}));
+  const day = (iso: string) => f.date(new Date(`${iso}T00:00:00Z`));
 
   // With no reporting period yet, offer the last complete financial year (what a plan usually reports)
   // and the current one, so the plan can start here instead of a detour through Settings.
@@ -56,6 +61,30 @@ export default async function CarbonReductionPlansPage({ params }: Props) {
           director&apos;s sign-off.
         </p>
       </div>
+
+      {renewal ? (
+        <section
+          className={`rounded-lg border p-4 text-sm ${
+            renewal.stage === "overdue"
+              ? "border-red-200 bg-red-50 text-red-900"
+              : renewal.stage === "current"
+                ? "border-[#E3E8EE] bg-white text-[#41505F]"
+                : "border-amber-200 bg-amber-50 text-amber-900"
+          }`}
+        >
+          <p>
+            <span className="font-medium">
+              {renewal.stage === "overdue" ? "Annual update overdue." : renewal.stage === "current" ? "Next annual update" : "Annual update due soon."}
+            </span>{" "}
+            Your latest signed plan ({renewal.periodLabel}) was signed on {day(renewal.signedDate)}
+            {renewal.stage === "overdue"
+              ? `, so its update was due on ${day(renewal.dueOn)}.`
+              : `; update it by ${day(renewal.dueOn)}.`}{" "}
+            PPN 006 asks for a plan to be updated at least annually, or sooner after a material change.
+            {canEdit && renewal.stage !== "current" ? " Start a plan for the latest reporting period below; it carries this year's text over." : ""}
+          </p>
+        </section>
+      ) : null}
 
       {canEdit ? (
         <section className="rounded-lg border border-[#E3E8EE] bg-white p-5">

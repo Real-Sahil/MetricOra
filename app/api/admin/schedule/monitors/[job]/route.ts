@@ -1,6 +1,6 @@
 /**
  * Scheduled monitoring jobs. Called by the Supabase pg_cron schedule in
- * migrations 20260922000010, 20260923000005, 20260923000016, 20260926000045, 20260927000050, 20261015000099 and 20261016000101 (daily), 20261005000076 (monthly), 20261021000109 (monitor-health, six-hourly). Every run, ok or failed, is recorded in monitor_heartbeats. Each job only alerts once per record or per
+ * migrations 20260922000010, 20260923000005, 20260923000016, 20260926000045, 20260927000050, 20261015000099, 20261016000101 and 20261106000116 (daily), 20261005000076 (monthly), 20261021000109 (monitor-health, six-hourly). Every run, ok or failed, is recorded in monitor_heartbeats. Each job only alerts once per record or per
  * threshold day, so a repeated or late call is safe.
  */
 
@@ -20,6 +20,7 @@ import { anonymiseExpiredAuditRows } from "@/lib/audit/anonymise";
 import { anchorAllAuditChains } from "@/lib/audit/anchor";
 import { processMonthlyChecklistReminders } from "@/lib/completeness/reminders";
 import { processSubcontractorReminders } from "@/lib/subcontractor/reminders";
+import { processCrpRenewalReminders } from "@/lib/crp/renewal";
 import { recordHeartbeat, runMonitorHealth } from "@/lib/monitoring/health";
 
 export const dynamic = "force-dynamic";
@@ -74,6 +75,12 @@ const JOBS: Record<string, () => Promise<"queued" | "processed">> = {
   // due date or up to 60 days overdue, at most three per request (migration 20261016000101).
   "subcontractor-reminders": async () => {
     await processSubcontractorReminders();
+    return "processed";
+  },
+  // Daily (migration 20261106000116): editors told 60 and 30 days before the latest signed
+  // Carbon Reduction Plan's first anniversary and once it has passed; each stage sent once.
+  "crp-renewal": async () => {
+    await processCrpRenewalReminders();
     return "processed";
   },
   // Every six hours (migration 20261021000109): logs an error, which reaches Sentry, for any
