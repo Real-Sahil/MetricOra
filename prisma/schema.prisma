@@ -6916,10 +6916,14 @@ model SvMeasure {
   name        String
   unit        String
   description String?
+  /// The guidance's own metric code (PPN 026 "1ai"), when the measure comes from a published list.
+  code        String?
+  sortOrder   Int      @default(0) @map("sort_order")
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
-  outcome    SvOutcome    @relation("OutcomeMeasures", fields: [outcomeId], references: [id], onDelete: Cascade)
-  activities SvActivity[] @relation("ActivityMeasure")
+  outcome     SvOutcome      @relation("OutcomeMeasures", fields: [outcomeId], references: [id], onDelete: Cascade)
+  activities  SvActivity[]   @relation("ActivityMeasure")
+  commitments SvCommitment[] @relation("MeasureCommitments")
 
   @@index([outcomeId])
   @@map("sv_measures")
@@ -6948,6 +6952,8 @@ model SvCommitment {
   /// The framework criterion this commitment answers (a PPN 026 award
   /// criterion, a TOMs outcome). Must sit in `frameworkId`.
   outcomeId         String?            @map("outcome_id")
+  /// The metric the KPI reports against (a PPN 026 Standard Reporting Metric). Must sit in `outcomeId`.
+  measureId         String?            @map("measure_id")
   ownerUserId       String?            @map("owner_user_id")
   title             String
   description       String?
@@ -6965,6 +6971,7 @@ model SvCommitment {
   contract        Contract?        @relation("ContractSvCommitments", fields: [contractId], references: [id], onDelete: SetNull)
   framework       SvFramework?     @relation("FrameworkCommitments", fields: [frameworkId], references: [id], onDelete: SetNull)
   outcome         SvOutcome?       @relation("OutcomeCommitments", fields: [outcomeId], references: [id], onDelete: SetNull)
+  measure         SvMeasure?       @relation("MeasureCommitments", fields: [measureId], references: [id], onDelete: SetNull)
   owner           User?            @relation("SvCommitmentOwner", fields: [ownerUserId], references: [id])
   reportingPeriod ReportingPeriod? @relation("PeriodSvCommitments", fields: [reportingPeriodId], references: [id])
   activities      SvActivity[]     @relation("CommitmentActivities")
@@ -6972,6 +6979,7 @@ model SvCommitment {
   @@index([organizationId, status])
   @@index([organizationId, contractId])
   @@index([outcomeId])
+  @@index([measureId])
   @@map("sv_commitments")
 }
 
@@ -7059,6 +7067,8 @@ model SvActivity {
   status            SvActivityStatus @default(draft)
   reviewNotes       String?          @map("review_notes")
   evidenceUrls      String[]         @default([]) @map("evidence_urls")
+  /// People from each PPN 026 target cohort the entry reached, as counts keyed by cohort code. Never names.
+  cohortCounts      Json?            @map("cohort_counts")
   // NVIDIA NIM AI extraction metadata
   aiExtracted       Boolean          @default(false) @map("ai_extracted")
   aiConfidence      Decimal?         @map("ai_confidence") @db.Decimal(5, 4)

@@ -35,7 +35,7 @@ import { startOfUtcDay } from "@/lib/subcontractor/deadline";
 import { subcontractorSummary } from "@/lib/subcontractor/summary";
 import { checkSubmissions } from "@/lib/subcontractor/checks";
 import { EmptyState as EmptyPanel } from "@/components/ui/empty-state";
-import { formatMoney } from "@/lib/i18n/org-format";
+import { formatMoney, formatters } from "@/lib/i18n/org-format";
 import { getOrgLocale } from "@/lib/i18n/org-basics";
 
 interface Props {
@@ -454,6 +454,10 @@ export default async function ContractDetailPage({ params }: Props) {
               checks={ppn026.checks}
               criterionIds={ppn026.criterionIds}
               unassigned={ppn026.unassigned ?? 0}
+              measures={ppn026.measures}
+              upgradeAvailable={ppn026.upgradeAvailable}
+              noticeDue={ppn026.noticeDue ? formatters({ locale, currency: "GBP" }).date(ppn026.noticeDue) : null}
+              csv={ppn026.csv}
             />
           </CardContent>
         </Card>

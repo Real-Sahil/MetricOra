@@ -8,7 +8,7 @@ import { writeAuditLog } from "@/lib/db/audit";
 import { rateLimitRequest } from "@/lib/security/rate-limit-async";
 import { rateLimitKey } from "@/lib/security/rate-limit";
 import { handleRouteError } from "@/lib/validation/api";
-import { installPpn026, PPN026_VERSION } from "@/lib/social-value/ppn026";
+import { installPpn026, PPN026_OCT_SLUG, PPN026_OCT_VERSION } from "@/lib/social-value/ppn026";
 
 /** Adds the PPN 026 Social Value Model to the organisation's frameworks. Idempotent. */
 export async function POST(req: NextRequest, { params }: { params: Promise<{ orgId: string }> }) {
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ org
         action: "sv_framework.create",
         resourceType: "SvFramework",
         resourceId: result.id,
-        metadata: { template: "ppn-026", version: PPN026_VERSION },
+        metadata: { template: PPN026_OCT_SLUG, version: PPN026_OCT_VERSION },
       });
     }
     return NextResponse.json({ id: result.id, created: result.created }, { status: result.created ? 201 : 200 });

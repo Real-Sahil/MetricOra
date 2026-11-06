@@ -2,6 +2,7 @@ import { z } from "zod";
 import { EGRID_CODES } from "@/lib/calculation/egrid-subregion";
 import { acquisitionSchema } from "@/lib/marketing/acquisition";
 import { countryIso2 } from "@/lib/calculation/geography";
+import { COHORT_CODES } from "@/lib/social-value/ppn026-metrics";
 import {
   EVIDENCE_MAX_BYTES,
   isAllowedEvidenceMimeType,
@@ -511,6 +512,8 @@ export const createSvCommitmentSchema = z.object({
   contractId: z.string().min(1).optional(),
   frameworkId: z.string().min(1).optional(),
   outcomeId: z.string().min(1).optional(),
+  /** Standard reporting metric (an SvMeasure under `outcomeId`). Null clears it on update. */
+  measureId: z.string().min(1).nullable().optional(),
   ownerUserId: z.string().min(1).optional(),
   title: z.string().min(1).max(300),
   description: z.string().max(5000).optional(),
@@ -537,6 +540,8 @@ export const createSvActivitySchema = z.object({
   monetisedValue: z.coerce.number().nonnegative().optional(),
   currency: z.string().length(3).optional(),
   evidenceUrls: z.array(z.string().url()).optional(),
+  /** People reached from each PPN 026 target cohort. Counts only, never names. */
+  cohortCounts: z.record(z.enum(COHORT_CODES), z.number().int().min(0).max(1_000_000)).optional(),
 });
 export const updateSvActivitySchema = createSvActivitySchema.partial();
 

@@ -399,6 +399,23 @@ describe("social value commitments and activities", () => {
     expect(db.svCommitment.create).not.toHaveBeenCalled();
   });
 
+  it("will not link a KPI to another organisation's reporting metric, or one from another criterion", async () => {
+    const { POST } = await import("@/app/api/orgs/[orgId]/sv/commitments/route");
+    db.svFramework.findFirst.mockResolvedValue({ id: "fw-a" });
+    db.svOutcome.findFirst.mockResolvedValue({ theme: { frameworkId: "fw-a" } });
+    const body = { title: "T-Level placements", frameworkId: "fw-a", outcomeId: "outcome-a", measureId: "measure-x" };
+
+    db.svMeasure.findFirst.mockResolvedValueOnce(null);
+    const foreign = await POST(post(`/api/orgs/${ORG_A}/sv/commitments`, body), { params: Promise.resolve({ orgId: ORG_A }) });
+    expect(foreign.status).toBe(404);
+    expect(db.svMeasure.findFirst.mock.calls[0][0].where).toEqual({ id: "measure-x", outcome: { theme: { framework: { organizationId: ORG_A } } } });
+
+    db.svMeasure.findFirst.mockResolvedValueOnce({ outcomeId: "outcome-other" });
+    const mismatched = await POST(post(`/api/orgs/${ORG_A}/sv/commitments`, body), { params: Promise.resolve({ orgId: ORG_A }) });
+    expect(mismatched.status).toBe(404);
+    expect(db.svCommitment.create).not.toHaveBeenCalled();
+  });
+
   it("will not log delivery against another organisation's commitment or reporting period", async () => {
     const { PATCH } = await import("@/app/api/orgs/[orgId]/sv/activities/[activityId]/route");
     db.svActivity.findUnique.mockResolvedValue({ id: "act-a", organizationId: ORG_A, status: "submitted" });

@@ -4,9 +4,11 @@ import { Table } from "@/components/ui/table";
 import { Fragment, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle2, Circle, Loader2, Plus } from "lucide-react";
+import { CheckCircle2, Circle, Download, Loader2, Plus } from "lucide-react";
 import { inputCls } from "@/components/structured-forms/ms-fields";
 import type { CriterionSummary, Ppn026Check } from "@/lib/social-value/ppn026";
+import type { Ppn026MeasureOption } from "@/lib/social-value/ppn026-load";
+import { PPN026_COHORTS } from "@/lib/social-value/ppn026-metrics";
 import { FormActions, FormField, FormSection } from "@/components/forms/form-kit";
 import { Button } from "@/components/ui/button";
 
@@ -22,6 +24,13 @@ type Props = {
   criterionIds: Record<string, string>;
   frameworkId: string | null;
   unassigned: number;
+  /** Standard reporting metrics of the installed version, to pick under Add KPI. */
+  measures: Ppn026MeasureOption[];
+  /** The org has only the August 2026 version; the October one can be added beside it. */
+  upgradeAvailable: boolean;
+  /** Next 12-month contract performance notice, already formatted; null below £5m. */
+  noticeDue: string | null;
+  csv: string;
 };
 
 const NETWORK = "Couldn't reach the server. Check your connection and try again.";
@@ -45,7 +54,8 @@ export function Ppn026Panel(p: Props) {
   const [error, setError] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const [logFor, setLogFor] = useState<string | null>(null);
-  const [kpi, setKpi] = useState({ criterion: p.criteria[0]?.code ?? "jobs", title: "", target: "", unit: "" });
+  const [kpi, setKpi] = useState({ criterion: p.criteria[0]?.code ?? "jobs", measureId: "", title: "", target: "", unit: "" });
+  const [cohorts, setCohorts] = useState<Record<string, string>>({});
   const [entry, setEntry] = useState({ date: new Date().toISOString().slice(0, 10), quantity: "", evidence: "", note: "" });
   const [file, setFile] = useState<File | null>(null);
 
@@ -86,7 +96,21 @@ export function Ppn026Panel(p: Props) {
     );
   }
 
-  const unitFor = (id: string) => p.criteria.flatMap((c) => c.kpis).find((k) => k.id === id)?.unit ?? "";
+  const allKpis = p.criteria.flatMap((c) => c.kpis);
+  const unitFor = (id: string) => allKpis.find((k) => k.id === id)?.unit ?? "";
+  const metricOf = (code: string | null) => (code ? p.measures.find((m) => m.code === code) : undefined);
+  const logKpi = logFor ? allKpis.find((k) => k.id === logFor) : undefined;
+  const logCohorts = !!metricOf(logKpi?.metricCode ?? null)?.cohort;
+  const criterionMetrics = p.measures.filter((m) => m.criterion === kpi.criterion);
+
+  function downloadCsv() {
+    const url = URL.createObjectURL(new Blob([p.csv], { type: "text/csv;charset=utf-8" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "ppn026-kpis.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -96,7 +120,29 @@ export function Ppn026Panel(p: Props) {
           Minimum social value weighting for this contract value:{" "}
           {p.minimumWeighting != null ? `${p.minimumWeighting}%` : "not in scope (under £1m or no value set)"}
         </span>
+        {p.noticeDue ? <span>Next contract performance notice due by {p.noticeDue} (the buyer publishes it)</span> : null}
       </div>
+
+      {p.upgradeAvailable && p.canEdit ? (
+        <div className="flex flex-col gap-2 rounded-lg border border-[#E3E8EE] bg-[#F9FAFC] p-3 text-sm">
+          <p className="text-[#41505F] max-w-[65ch]">
+            The Cabinet Office guidance of October 2026 adds standard reporting metrics for each criterion and asks for at least one KPI on contracts of £5m or
+            more. Adding the October version keeps your August KPIs and their delivery.
+          </p>
+          <div>
+            <Button
+              type="button"
+              size="sm"
+              disabled={!!busy}
+              onClick={() => run("install", () => send(`/api/orgs/${p.orgId}/sv/frameworks/ppn-026`, {}))}
+              className="gap-1.5"
+            >
+              {busy === "install" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+              Add the October 2026 version
+            </Button>
+          </div>
+        </div>
+      ) : null}
 
       <ul className="grid gap-1.5">
         {p.checks.map((c) => (
@@ -138,7 +184,21 @@ export function Ppn026Panel(p: Props) {
                       {c.kpis.map((k) => (
                         <tr key={k.id} className="border-t border-[#E3E8EE]">
                           <td className="py-2 pl-8 text-[#131d29]">
+                            {k.metricCode ? (
+                              <span className="mr-1.5 rounded border border-[#E3E8EE] px-1 py-0.5 font-mono text-[11px] text-[#41505F]" title={metricOf(k.metricCode)?.name}>
+                                {k.metricCode}
+                              </span>
+                            ) : null}
                             {k.title}
+                            {k.aggregate === "latest" ? <span className="ml-2 text-xs text-[#5B6A78]">latest figure</span> : null}
+                            {Object.keys(k.cohortTotals).length > 0 ? (
+                              <span
+                                className="block text-xs text-[#5B6A78]"
+                                title={PPN026_COHORTS.filter((c) => k.cohortTotals[c.code]).map((c) => `${c.label}: ${k.cohortTotals[c.code]}`).join("\n")}
+                              >
+                                People reached from target cohorts: {fmt(Object.values(k.cohortTotals).reduce((s, n) => s + (n ?? 0), 0))}
+                              </span>
+                            ) : null}
                             {k.pendingEntries > 0 ? (
                               <Link href={`/orgs/${p.orgId}/social-value/activities`} className="ml-2 text-xs text-[#c2400c] underline">
                                 {k.pendingEntries} awaiting review
@@ -177,12 +237,26 @@ export function Ppn026Panel(p: Props) {
         </p>
       ) : null}
 
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+        {allKpis.length > 0 ? (
+          <button type="button" onClick={downloadCsv} className="inline-flex items-center gap-1 rounded-md border border-[#E3E8EE] px-3 py-1.5 text-sm text-[#131d29] hover:bg-[#F9FAFC]">
+            <Download className="h-3.5 w-3.5" /> Download KPI figures (CSV)
+          </button>
+        ) : null}
+        <p className="text-xs text-[#5B6A78] max-w-[65ch]">
+          The guidance refers to a Community Programme list for local delivery. It has not been published yet, so it is not in this model.
+        </p>
+      </div>
+
       {logFor ? (
         <form
           className="space-y-6 rounded-lg border border-[#E3E8EE] bg-white p-4 sm:p-5"
           onSubmit={(e) => {
             e.preventDefault();
-            const k = p.criteria.flatMap((c) => c.kpis).find((x) => x.id === logFor);
+            const k = logKpi;
+            const cohortCounts = logCohorts
+              ? Object.fromEntries(Object.entries(cohorts).filter(([, v]) => v !== "" && Number(v) > 0).map(([c, v]) => [c, Math.round(Number(v))]))
+              : undefined;
             void run(
               "log",
               async () => {
@@ -207,17 +281,19 @@ export function Ppn026Panel(p: Props) {
                   quantityValue: Number(entry.quantity),
                   quantityUnit: unitFor(logFor) || undefined,
                   evidenceUrls: evidenceUrl ? [evidenceUrl] : undefined,
+                  cohortCounts,
                 });
               },
               () => {
                 setFile(null);
                 setLogFor(null);
+                setCohorts({});
                 setEntry({ date: new Date().toISOString().slice(0, 10), quantity: "", evidence: "", note: "" });
               },
             );
           }}
         >
-          <FormSection title={`Log delivery: ${p.criteria.flatMap((c) => c.kpis).find((x) => x.id === logFor)?.title ?? ""}`} description="Delivery is reviewed before it counts. Do not include personal details in notes or files." cols={3}>
+          <FormSection title={`Log delivery: ${logKpi?.title ?? ""}`} description="Delivery is reviewed before it counts. Do not include personal details in notes or files." cols={3}>
             <FormField label="Date" htmlFor="ppn026-date">
               <input id="ppn026-date" type="date" required className={inputCls} value={entry.date} onChange={(e) => setEntry({ ...entry, date: e.target.value })} />
             </FormField>
@@ -232,8 +308,30 @@ export function Ppn026Panel(p: Props) {
               <input id="ppn026-note" className={inputCls} value={entry.note} onChange={(e) => setEntry({ ...entry, note: e.target.value })} />
             </FormField>
           </FormSection>
+          {logCohorts ? (
+            <FormSection
+              title="People reached from the target cohorts"
+              description="How many people from each cohort this delivery reached. Numbers only: never record who they are."
+              cols={2}
+            >
+              {PPN026_COHORTS.map((c) => (
+                <FormField key={c.code} label={c.label} htmlFor={`ppn026-cohort-${c.code}`} optional>
+                  <input
+                    id={`ppn026-cohort-${c.code}`}
+                    type="number"
+                    min="0"
+                    step="1"
+                    inputMode="numeric"
+                    className={inputCls}
+                    value={cohorts[c.code] ?? ""}
+                    onChange={(e) => setCohorts({ ...cohorts, [c.code]: e.target.value })}
+                  />
+                </FormField>
+              ))}
+            </FormSection>
+          ) : null}
           <FormActions>
-            <Button type="button" size="sm" variant="outline" onClick={() => setLogFor(null)}>Cancel</Button>
+            <Button type="button" size="sm" variant="outline" onClick={() => { setLogFor(null); setCohorts({}); }}>Cancel</Button>
             <Button type="submit" size="sm" disabled={!!busy}>{busy === "log" ? "Saving..." : "Submit for review"}</Button>
           </FormActions>
         </form>
@@ -252,6 +350,7 @@ export function Ppn026Panel(p: Props) {
                     contractId: p.contractId,
                     frameworkId: p.frameworkId,
                     outcomeId: p.criterionIds[kpi.criterion],
+                    measureId: kpi.measureId || undefined,
                     title: kpi.title,
                     targetValue: kpi.target ? Number(kpi.target) : undefined,
                     targetUnit: kpi.unit || undefined,
@@ -259,14 +358,14 @@ export function Ppn026Panel(p: Props) {
                   }),
                 () => {
                   setAdding(false);
-                  setKpi({ ...kpi, title: "", target: "", unit: "" });
+                  setKpi({ ...kpi, measureId: "", title: "", target: "", unit: "" });
                 },
               );
             }}
           >
             <FormSection title="Add a KPI" description="The measure you committed to in the bid, under one of the award criteria." cols={4}>
               <FormField label="Award criterion" htmlFor="ppn026-criterion" span={2}>
-                <select id="ppn026-criterion" className={inputCls} value={kpi.criterion} onChange={(e) => setKpi({ ...kpi, criterion: e.target.value })}>
+                <select id="ppn026-criterion" className={inputCls} value={kpi.criterion} onChange={(e) => setKpi({ ...kpi, criterion: e.target.value, measureId: "" })}>
                   {p.criteria.map((c) => (
                     <option key={c.code} value={c.code}>
                       {c.outcomeName}: {c.name}
@@ -274,6 +373,32 @@ export function Ppn026Panel(p: Props) {
                   ))}
                 </select>
               </FormField>
+              {p.measures.length > 0 ? (
+                <FormField
+                  label="Standard reporting metric"
+                  htmlFor="ppn026-metric"
+                  span={2}
+                  optional
+                  hint="From Annex B of the guidance. Leave blank only where the buyer agreed a different metric."
+                >
+                  <select
+                    id="ppn026-metric"
+                    className={inputCls}
+                    value={kpi.measureId}
+                    onChange={(e) => {
+                      const m = criterionMetrics.find((x) => x.id === e.target.value);
+                      setKpi({ ...kpi, measureId: e.target.value, unit: m?.unit ?? kpi.unit });
+                    }}
+                  >
+                    <option value="">None (agreed with the buyer)</option>
+                    {criterionMetrics.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.code}: {m.name}
+                      </option>
+                    ))}
+                  </select>
+                </FormField>
+              ) : null}
               <FormField label="KPI, as committed in the bid" htmlFor="ppn026-title" span={2}>
                 <input id="ppn026-title" required maxLength={300} placeholder="For example: apprenticeship starts on the contract" className={inputCls} value={kpi.title} onChange={(e) => setKpi({ ...kpi, title: e.target.value })} />
               </FormField>

@@ -42,7 +42,7 @@ export default function PublicSectorPage() {
             {
               id: "ppn-026",
               problem: "PPN 026 commitments you have to prove during the contract",
-              answer: "Add the PPN 026 Social Value Model to a contract, set a KPI against each award criterion you committed to (Good Jobs and Skills), and log delivery with the payroll extract, training record or timesheet attached. A check flags contracts of £5 million or more with fewer than three KPIs.",
+              answer: "Add the PPN 026 Social Value Model to a contract, set a KPI against each award criterion you committed to, using its standard reporting metric, and log delivery with the payroll extract, training record or timesheet attached and the number of people reached from each target cohort. Checks flag a £5 million contract with no KPI, and the KPIs export as a CSV for the buyer's performance notice.",
             },
           ],
           feature: {

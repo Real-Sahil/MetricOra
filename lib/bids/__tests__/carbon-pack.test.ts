@@ -83,7 +83,7 @@ function pack(over: Partial<BidPackData> = {}): BidPackData {
       id: "c1", name: "A2 resurfacing", client: "National Highways", reference: "NH-9", value: 4_000_000, currency: "GBP",
       startDate: new Date("2024-04-01"), endDate: null, tonnes: 80, tonnesPerMillion: 20, budgetTonnes: 120,
       socialValuePounds: 250_000, wasteTonnes: 300, diversionRate: 0.94,
-      ppn026: [{ id: "k1", title: "Training and retraining: Apprenticeship starts", target: 12, unit: "starts", delivered: 9, progressPct: 75, approvedEntries: 3, pendingEntries: 1, entriesWithEvidence: 3 }],
+      ppn026: [{ id: "k1", title: "Training and retraining: Apprenticeship starts", target: 12, unit: "starts", delivered: 9, progressPct: 75, approvedEntries: 3, pendingEntries: 1, entriesWithEvidence: 3, metricCode: null, aggregate: "sum", cohortTotals: {} }],
       socialValue: {
         targetPounds: 400_000,
         themes: [{ code: "NT1", name: "Jobs", pounds: 180_000 }, { code: "NT3", name: "Growth", pounds: 70_000 }],

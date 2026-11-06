@@ -85,12 +85,16 @@ export async function POST(
       contractId: body.contractId,
       frameworkId: body.frameworkId,
       outcomeId: body.outcomeId,
+      measureId: body.measureId,
       reportingPeriodId: body.reportingPeriodId,
       ownerUserId: body.ownerUserId,
     });
     if (refError) return apiError("NOT_FOUND", refError, 404);
     if (body.outcomeId && !body.frameworkId) {
       return apiError("VALIDATION_ERROR", "A criterion needs its framework.", 400);
+    }
+    if (body.measureId && !body.outcomeId) {
+      return apiError("VALIDATION_ERROR", "A reporting metric needs its criterion.", 400);
     }
 
     const commitment = await prisma.svCommitment.create({
@@ -99,6 +103,7 @@ export async function POST(
         contractId: body.contractId,
         frameworkId: body.frameworkId,
         outcomeId: body.outcomeId,
+        measureId: body.measureId ?? undefined,
         ownerUserId: body.ownerUserId,
         title: body.title,
         description: body.description,
@@ -118,7 +123,7 @@ export async function POST(
       action: "sv_commitment.create",
       resourceType: "SvCommitment",
       resourceId: commitment.id,
-      metadata: { title: body.title, contractId: body.contractId },
+      metadata: { title: body.title, contractId: body.contractId, measureId: body.measureId ?? null },
     });
 
     return NextResponse.json(commitment, { status: 201 });

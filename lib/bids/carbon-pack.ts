@@ -6,7 +6,8 @@
 // checks instead.
 
 import { z } from "zod";
-import { PPN026_SLUG, summarisePpn026, type KpiSummary } from "@/lib/social-value/ppn026";
+import { PPN026_SLUGS, summarisePpn026, type KpiSummary } from "@/lib/social-value/ppn026";
+import { PPN026_METRIC_BY_CODE } from "@/lib/social-value/ppn026-metrics";
 import { prisma } from "@/lib/db";
 import { countsTowardHeadline, scope2MethodOf } from "@/lib/calculation/scope2-method";
 import { CATEGORY_BREAKDOWN_DIMENSIONS } from "@/lib/calculation/aggregate-filters";
@@ -354,7 +355,7 @@ async function loadContractEvidence(
       select: { contractId: true, targetPounds: true },
     }),
     prisma.svCommitment.findMany({
-      where: { organizationId: orgId, contractId: { in: ids }, framework: { slug: PPN026_SLUG }, status: { not: "cancelled" } },
+      where: { organizationId: orgId, contractId: { in: ids }, framework: { slug: { in: PPN026_SLUGS } }, status: { not: "cancelled" } },
       select: {
         id: true,
         contractId: true,
@@ -363,9 +364,10 @@ async function loadContractEvidence(
         targetValue: true,
         targetUnit: true,
         outcome: { select: { code: true } },
+        measure: { select: { code: true } },
         activities: {
           where: { activityDate: { lte: periodEnd } },
-          select: { status: true, quantityValue: true, quantityUnit: true, evidenceUrls: true },
+          select: { status: true, quantityValue: true, quantityUnit: true, evidenceUrls: true, activityDate: true, cohortCounts: true },
         },
       },
       orderBy: { createdAt: "asc" },
@@ -422,13 +424,18 @@ async function loadContractEvidence(
               targetValue: num(k.targetValue),
               targetUnit: k.targetUnit,
               status: k.status,
+              metricCode: k.measure?.code ?? null,
+              aggregate: (k.measure?.code && PPN026_METRIC_BY_CODE.get(k.measure.code)?.aggregate) || "sum",
               activities: k.activities.map((a) => ({
                 status: a.status,
                 quantityValue: num(a.quantityValue),
                 quantityUnit: a.quantityUnit,
                 evidenceCount: a.evidenceUrls.length,
+                activityDate: a.activityDate,
+                cohortCounts: a.cohortCounts,
               })),
             })),
+          "october",
         ).flatMap((cr) => cr.kpis.map((k) => ({ ...k, title: `${cr.name}: ${k.title}` }))),
         wasteTonnes: w?.tonnes ?? 0,
         diversionRate: w && w.tonnes > 0 ? w.diverted / w.tonnes : null,

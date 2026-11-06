@@ -15,7 +15,8 @@ export type SvRefs = {
  * Every id a social value commitment or activity may point at must belong to
  * the organisation. Returns the first failing reference's message, or null.
  * `frameworkId` is the commitment's framework after the write (so an outcome
- * must sit in that framework).
+ * must sit in that framework), and a measure given with `outcomeId` must sit
+ * in that outcome (a KPI's standard reporting metric under its criterion).
  */
 export async function svRefsError(orgId: string, refs: SvRefs): Promise<string | null> {
   const [contract, framework, outcome, period, owner, commitment, measure, facility] = await Promise.all([
@@ -31,7 +32,10 @@ export async function svRefsError(orgId: string, refs: SvRefs): Promise<string |
     refs.ownerUserId ? prisma.organizationMembership.findFirst({ where: { userId: refs.ownerUserId, organizationId: orgId }, select: { id: true } }) : true,
     refs.commitmentId ? prisma.svCommitment.findFirst({ where: { id: refs.commitmentId, organizationId: orgId }, select: { id: true } }) : true,
     refs.measureId
-      ? prisma.svMeasure.findFirst({ where: { id: refs.measureId, outcome: { theme: { framework: { organizationId: orgId } } } }, select: { id: true } })
+      ? prisma.svMeasure.findFirst({
+          where: { id: refs.measureId, outcome: { theme: { framework: { organizationId: orgId } } } },
+          select: { outcomeId: true },
+        })
       : true,
     refs.facilityId ? prisma.facility.findFirst({ where: { id: refs.facilityId, organizationId: orgId }, select: { id: true } }) : true,
   ]);
@@ -45,6 +49,9 @@ export async function svRefsError(orgId: string, refs: SvRefs): Promise<string |
   if (!owner) return "Owner is not a member of this organisation.";
   if (!commitment) return "Commitment not found.";
   if (!measure) return "Measure not found.";
+  if (measure !== true && refs.outcomeId && measure.outcomeId !== refs.outcomeId) {
+    return "That metric belongs to a different criterion.";
+  }
   if (!facility) return "Facility not found.";
   return null;
 }

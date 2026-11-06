@@ -102,6 +102,7 @@ export async function POST(
         monetisedValue: body.monetisedValue != null ? new Decimal(body.monetisedValue) : undefined,
         currency: body.currency ?? "GBP",
         evidenceUrls: body.evidenceUrls ?? [],
+        cohortCounts: body.cohortCounts && Object.keys(body.cohortCounts).length ? body.cohortCounts : undefined,
         status: "submitted",
       },
     });

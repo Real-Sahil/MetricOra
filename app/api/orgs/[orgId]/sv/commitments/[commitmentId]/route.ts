@@ -80,12 +80,25 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
         : 0;
       if (!inFramework) return apiError("VALIDATION_ERROR", "That criterion belongs to a different framework.", 400);
     }
+    // A reporting metric must sit under the criterion the KPI ends up with; moving
+    // the KPI to another criterion drops a metric the body does not restate.
+    const measureAfter =
+      body.measureId !== undefined ? body.measureId : outcomeAfter !== commitment.outcomeId ? null : commitment.measureId;
+    if (measureAfter) {
+      const underCriterion = outcomeAfter
+        ? await prisma.svMeasure.count({
+            where: { id: measureAfter, outcomeId: outcomeAfter, outcome: { theme: { framework: { organizationId: orgId } } } },
+          })
+        : 0;
+      if (!underCriterion) return apiError("VALIDATION_ERROR", "That metric belongs to a different criterion.", 400);
+    }
 
     const updated = await prisma.svCommitment.update({
       where: { id: commitmentId },
       data: {
         ...body,
         outcomeId: outcomeAfter,
+        measureId: measureAfter,
         targetValue: body.targetValue != null ? new Decimal(body.targetValue) : undefined,
         monetisedValue: body.monetisedValue != null ? new Decimal(body.monetisedValue) : undefined,
         targetDate: body.targetDate ? new Date(body.targetDate) : undefined,
