@@ -25,6 +25,8 @@ export const SCOPE3_STATUSES = [
   { value: "not_yet_measured", label: "Relevant, not yet measured" },
 ] as const;
 
+/** Deliberately loose: one @, something either side, a dot in the domain. */
+export const SIGNATORY_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const text = (max: number) => z.string().trim().max(max).default("");
 const year = z.coerce.number().int().min(2000).max(2100);
 
@@ -105,6 +107,16 @@ export const crpSectionsSchema = z.object({
       signatoryName: text(120),
       signatoryTitle: text(120),
       signedDate: text(10),
+      /**
+       * Where to email the signatory about updates (annual renewal, material
+       * change). Optional, kept off the printed plan; an editor can clear it.
+       */
+      signatoryEmail: z
+        .string()
+        .trim()
+        .max(254)
+        .refine((v) => v === "" || SIGNATORY_EMAIL.test(v), "Enter a valid email address, or leave it blank")
+        .default(""),
       boardApproved: z.boolean().default(false),
       methodologyConfirmed: z.boolean().default(false),
     })

@@ -6,7 +6,7 @@ import { AuthError, requireOrgMember, ROLE_GROUPS } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
 import { previousFiscalYear, fiscalYearOf } from "@/lib/i18n/fiscal-year";
 import { formatters, orgFormat } from "@/lib/i18n/org-format";
-import { loadCrpRenewal } from "@/lib/crp/renewal";
+import { loadCrpRenewal, loadMaterialChanges } from "@/lib/crp/renewal";
 import { StartPlanForm } from "./start-plan-form";
 
 type Props = { params: Promise<{ orgId: string }> };
@@ -42,7 +42,9 @@ export default async function CarbonReductionPlansPage({ params }: Props) {
     prisma.organization.findUnique({ where: { id: orgId }, select: { fiscalYearStartMonth: true, hqCountry: true, reportingCurrency: true } }),
     loadCrpRenewal(orgId),
   ]);
+  const changes = renewal ? await loadMaterialChanges(orgId, renewal.signedDate) : [];
   const f = formatters(orgFormat(org ?? {}));
+  const pct = (n: number) => `${n > 0 ? "+" : ""}${f.number(n, 1)}%`;
   const day = (iso: string) => f.date(new Date(`${iso}T00:00:00Z`));
 
   // With no reporting period yet, offer the last complete financial year (what a plan usually reports)
@@ -82,6 +84,33 @@ export default async function CarbonReductionPlansPage({ params }: Props) {
               : `; update it by ${day(renewal.dueOn)}.`}{" "}
             PPN 006 asks for a plan to be updated at least annually, or sooner after a material change.
             {canEdit && renewal.stage !== "current" ? " Start a plan for the latest reporting period below; it carries this year's text over." : ""}
+          </p>
+        </section>
+      ) : null}
+
+      {renewal && changes.length ? (
+        <section className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <p className="font-medium">Material change since the plan was signed.</p>
+          <p className="mt-1">
+            PPN 006 asks for the plan to be updated where there has been a material change. These were recorded after {day(renewal.signedDate)}:
+          </p>
+          <ul className="mt-2 list-disc space-y-1 pl-5">
+            {changes.map((c) => (
+              <li key={`${c.kind}:${c.id}`}>
+                {c.kind === "base_year_recalculation"
+                  ? `Base year recalculation approved on ${day(c.date)}${c.deltaPercent != null ? `, ${pct(c.deltaPercent)} on the total` : ""}, marked significant${
+                      c.thresholdPercent != null ? ` against your ${f.number(c.thresholdPercent, 1)}% threshold` : ""
+                    }.`
+                  : `Restatement recorded on ${day(c.date)}${c.deltaPercent != null ? `, ${pct(c.deltaPercent)} on the total` : ""}, marked material.`}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2">
+            Review them on the{" "}
+            <Link href={`/orgs/${orgId}/base-year`} className="text-[#c2400c] underline">
+              Base year page
+            </Link>
+            {canEdit ? ", then start a plan for the latest reporting period below." : "."}
           </p>
         </section>
       ) : null}

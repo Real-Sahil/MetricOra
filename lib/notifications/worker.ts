@@ -14,6 +14,7 @@ import {
   supplierAccountExpiringEmail,
   dsarSlaAlertEmail,
   securityAlertEmail,
+  crpReminderEmail,
 } from "./email";
 import { sendPushToUser } from "./fcm";
 import { notificationPresentation } from "./presentation";
@@ -391,13 +392,25 @@ export async function processNotification(data: NotificationJobData): Promise<vo
       });
     })
 
-    .with({ type: "crp_renewal" }, async (d) => {
+    .with({ type: "crp_renewal" }, { type: "crp_material_change" }, async (d) => {
+      const { title, body, link } = notificationPresentation(d);
       const overdue = d.metadata?.stage === "overdue";
-      await sendPushToUser(d.recipientUserId, {
-        title: overdue ? "Carbon Reduction Plan due for update" : "Carbon Reduction Plan update coming up",
-        body: `Your signed plan ${overdue ? "was due for its annual update on" : "is due for its annual update on"} ${(d.metadata?.dueOn as string) ?? "its anniversary"}.`,
-        data: { type: "crp_renewal", orgId: d.orgId },
-      });
+      await Promise.all([
+        sendEmail({ to: recipient.email, ...crpReminderEmail({ recipientName, orgName, title, body, appUrl: `${APP_URL}${link ?? ""}` }) }),
+        sendPushToUser(d.recipientUserId, {
+          title:
+            d.type === "crp_material_change"
+              ? "Material change: update your Carbon Reduction Plan"
+              : overdue
+                ? "Carbon Reduction Plan due for update"
+                : "Carbon Reduction Plan update coming up",
+          body:
+            d.type === "crp_material_change"
+              ? "A significant recalculation or material restatement was recorded after the plan was signed."
+              : `Your signed plan ${overdue ? "was due for its annual update on" : "is due for its annual update on"} ${(d.metadata?.dueOn as string) ?? "its anniversary"}.`,
+          data: { type: d.type, orgId: d.orgId },
+        }),
+      ]);
     })
 
     .with({ type: "payment_failed" }, async (d) => {

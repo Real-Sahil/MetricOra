@@ -32,6 +32,7 @@ export type NotificationJobData = {
     | "monthly_checklist"
     | "waste_document_expiry"
     | "crp_renewal"
+    | "crp_material_change"
     | "payment_failed";
   recipientUserId: string;
   orgId: string;

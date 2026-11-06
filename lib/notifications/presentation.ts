@@ -192,6 +192,23 @@ export function notificationPresentation(data: NotificationJobData): Notificatio
         link: `${orgBase}/carbon-reduction-plan`,
       };
     }
+    case "crp_material_change": {
+      const recalc = data.metadata?.kind === "base_year_recalculation";
+      const date = str(data.metadata?.date, "");
+      const signed = str(data.metadata?.signedDate, "");
+      const period = str(data.metadata?.periodLabel, "");
+      const delta = typeof data.metadata?.deltaPercent === "number" ? data.metadata.deltaPercent : null;
+      const threshold = typeof data.metadata?.thresholdPercent === "number" ? data.metadata.thresholdPercent : null;
+      const pct = (n: number) => `${n > 0 ? "+" : ""}${Number(n.toFixed(1))}%`;
+      const what = recalc
+        ? `A base year recalculation approved on ${date}${delta != null ? ` changed the base year total by ${pct(delta)}` : ""}, which your organisation marked significant${threshold != null ? ` (threshold ${Number(threshold.toFixed(1))}%)` : ""}.`
+        : `A restatement recorded on ${date}${delta != null ? ` (${pct(delta)} on the total)` : ""} was marked material.`;
+      return {
+        title: "Material change since your Carbon Reduction Plan was signed",
+        body: `${what} PPN 006 asks for the plan to be updated where there has been a material change. Your latest signed plan${period ? ` (${period})` : ""} was signed on ${signed}.`,
+        link: `${orgBase}/carbon-reduction-plan`,
+      };
+    }
     case "monthly_checklist": {
       const count = num(data.metadata?.count, 0);
       const label = str(data.metadata?.monthLabel, "last month");

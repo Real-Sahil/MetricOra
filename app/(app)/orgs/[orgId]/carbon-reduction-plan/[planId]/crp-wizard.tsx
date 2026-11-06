@@ -603,6 +603,13 @@ export function CrpWizard({
           <input id="crp-sig-date" type="date" className={inputCls} disabled={disabled} value={s.declaration.signedDate} onChange={(e) => update((p) => ({ ...p, declaration: { ...p.declaration, signedDate: e.target.value } }))} />
         </FieldRow>
       </div>
+      <FieldRow
+        label="Signatory email for update reminders (optional)"
+        htmlFor="crp-sig-email"
+        hint="Not printed on the plan. The signatory is emailed when the annual update is due and after a material change. Editors get these reminders anyway."
+      >
+        <input id="crp-sig-email" type="email" autoComplete="off" maxLength={254} className={inputCls} disabled={disabled} value={s.declaration.signatoryEmail} placeholder="director@example.co.uk" onChange={(e) => update((p) => ({ ...p, declaration: { ...p.declaration, signatoryEmail: e.target.value } }))} />
+      </FieldRow>
       <div className="rounded border border-[#E3E8EE] bg-white p-2">
         <CheckRow id="crp-board" label="This plan has been reviewed and signed off by the board of directors (or equivalent management body)." checked={s.declaration.boardApproved} disabled={disabled} onChange={(v) => update((p) => ({ ...p, declaration: { ...p.declaration, boardApproved: v } }))} />
         <CheckRow id="crp-method" label="Emissions are reported under the GHG Protocol Corporate Standard with the UK Government conversion factors, and the required Scope 3 categories under the reporting standard for Carbon Reduction Plans." checked={s.declaration.methodologyConfirmed} disabled={disabled} onChange={(v) => update((p) => ({ ...p, declaration: { ...p.declaration, methodologyConfirmed: v } }))} />

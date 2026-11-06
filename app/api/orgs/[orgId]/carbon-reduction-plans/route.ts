@@ -64,7 +64,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ org
           measures: prev.measures,
           scope3: prev.scope3,
           secr: { ...prev.secr, intensityValue: "" },
-          declaration: { signatoryName: prev.declaration.signatoryName, signatoryTitle: prev.declaration.signatoryTitle },
+          declaration: { signatoryName: prev.declaration.signatoryName, signatoryTitle: prev.declaration.signatoryTitle, signatoryEmail: prev.declaration.signatoryEmail },
         }
       : {};
 

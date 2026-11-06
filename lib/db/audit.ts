@@ -309,6 +309,7 @@ export type AuditAction =
   | "carbon_reduction_plan.created"
   | "carbon_reduction_plan.updated"
   | "carbon_reduction_plan.generated"
+  | "carbon_reduction_plan.reminder_emailed"
   | "transition_plan.approved"
   | "climate_disclosure.updated"
   | "climate_disclosure.approved"

@@ -46,7 +46,7 @@ function complete(): CrpSections {
     baseline: { rationale: "First year with complete metered data.", additionalDetails: "" },
     targets: { ...s.targets, netZeroYear: 2045, interim: [{ id: "t", year: 2030, reductionPct: 50, scopes: "s1s2" as const }] },
     measures: { ...s.measures, completed: [{ id: "m", name: "HVO in site plant", year: 2025, description: "All excavators", savingTco2e: 120 }] },
-    declaration: { signatoryName: "Sam Hartley", signatoryTitle: "Managing Director", signedDate: "2026-09-25", boardApproved: true, methodologyConfirmed: true },
+    declaration: { signatoryName: "Sam Hartley", signatoryTitle: "Managing Director", signedDate: "2026-09-25", signatoryEmail: "", boardApproved: true, methodologyConfirmed: true },
   };
 }
 

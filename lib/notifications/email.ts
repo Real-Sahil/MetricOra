@@ -1018,3 +1018,33 @@ export function securityAlertEmail(params: {
   const html = `<p>Hi ${params.recipientName},</p><p>A security event was detected in your MetricOra organisation <strong>${params.orgName}</strong>.</p><p><strong>Type:</strong> ${params.alertType}<br><strong>Detail:</strong> ${params.detail}</p><p>If this was not you, please secure your account immediately.</p><p><a href="${params.appUrl}">Review security logs</a></p>`;
   return { subject, html, text };
 }
+
+/**
+ * Carbon Reduction Plan reminders (annual update, material change). Title and
+ * body come from the in-app notification so every channel says the same thing.
+ * `toSignatory` is the copy for the director named on the plan, who may have no
+ * account: it says why they received it and how it stops.
+ */
+export function crpReminderEmail(params: {
+  recipientName: string | null;
+  orgName: string;
+  title: string;
+  body: string;
+  appUrl: string;
+  toSignatory?: boolean;
+}): Pick<EmailPayload, "subject" | "html" | "text"> {
+  const subject = `${params.title}: ${params.orgName}`;
+  const why = params.toSignatory
+    ? `You are named as the signatory on ${params.orgName}'s Carbon Reduction Plan, and a colleague added this address for update reminders. To stop them, ask an editor to remove it from the plan's declaration.`
+    : `You receive this as an editor of ${params.orgName} in MetricOra.`;
+  const greeting = params.recipientName ? `Hi ${params.recipientName},` : "Hello,";
+  const text = [greeting, ``, params.body, ``, `Open the plan: ${params.appUrl}`, ``, why].join("\n");
+  const html = emailLayout(`
+    <p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${BRAND_DARK};letter-spacing:-0.02em;">${escapeHtml(params.title)}</p>
+    <p style="margin:0 0 12px;font-size:15px;color:${TEXT_MUTED};line-height:1.5;">${escapeHtml(greeting)}</p>
+    <p style="margin:0 0 28px;font-size:15px;color:${TEXT_MUTED};line-height:1.6;">${escapeHtml(params.body)}</p>
+    ${btn(params.toSignatory ? "Open the plan (MetricOra sign-in)" : "Open the plan", params.appUrl)}
+    <p style="margin:20px 0 0;font-size:12px;color:${TEXT_SUBTLE};line-height:1.6;">${escapeHtml(why)}</p>
+  `, { orgName: params.orgName });
+  return { subject, html, text };
+}
